@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <stdbool.h>
 #include <assert.h>
 
 static matrix *new_mat(int row_size, int col_size) {

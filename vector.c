@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <stdbool.h>
 
 vector *vec_zero(int dim) {
     assert(dim > 0);

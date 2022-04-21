@@ -9,6 +9,19 @@ libstack.a: stack.o lnode.o
 libvector.a: vector.o
 	ar rcs libvector.a vector.o
 
+list.o: list.c list.h
+	gcc -c list.c -o list.o
+lnode.o: lnode.c lnode.h
+	gcc -c lnode.c -o lnode.o
+matrix.o: matrix.c matrix.h
+	gcc -c matrix.c -o matrix.o
+queue.o: queue.c queue.h
+	gcc -c queue.c -o queue.o
+stack.o: stack.c stack.h
+	gcc -c stack.c -o stack.o
+vector.o: vector.c vector.h
+	gcc -c vector.c -o vector.o
+
 clean:
 	rm -f *.a *.o sample
 run: sample
