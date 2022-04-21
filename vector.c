@@ -25,6 +25,24 @@ vector *vec_random(int dim, double min, double max, bool integer) {
     return output;
 }
 
+#define VEC_FROM_ARR\
+    assert(arr && dim > 0);\
+    vector *output = (vector *)malloc(sizeof(vector));\
+    output->dim = dim;\
+    output->entry = (double *)malloc(sizeof(double) * dim);\
+    for (int i = 0; i < dim; i++) {\
+        output->entry[i] = arr[i];\
+    }\
+    return output;
+
+vector *vec_iarr(int *arr, int dim) {
+    VEC_FROM_ARR
+}
+
+vector *vec_darr(double *arr, int dim) {
+    VEC_FROM_ARR
+}
+
 vector *vec_add(vector *a, vector *b) {
     assert(a->dim == b->dim);
     vector *output = (vector *)malloc(sizeof(vector));

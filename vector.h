@@ -7,6 +7,8 @@ typedef struct vector vector;
 
 vector *vec_zero(int dim);
 vector *vec_random(int dim, double min, double max, bool integer);
+vector *vec_iarr(int *arr, int dim);
+vector *vec_darr(double *arr, int dim);
 vector *vec_add(vector *a, vector *b);
 vector *vec_minus(vector *a, vector *b);
 vector *vec_mul(vector *v, double n);
