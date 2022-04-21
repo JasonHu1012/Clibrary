@@ -65,6 +65,10 @@ void lst_remove(list *l, list_node *n, bool kill_node) {
     l->size--;
 }
 
+int lst_size(list *l) {
+    return l->size;
+}
+
 void lst_iter_init(list *l, bool reverse) {
     l->iter = reverse ? l->dummy->inherit->prev : l->dummy->inherit->next;
     l->reverse = reverse;
@@ -88,6 +92,13 @@ void lst_kill_node(list_node *n) {
 }
 
 void lst_kill(list *l) {
-    while (l->size) {
+    while (l->size--) {
+        list_node *n;
+        memcpy(&n, l->dummy->inherit->next->content + l->width, sizeof(list_node *));
+        n->inherit->next->prev = n->inherit->prev;
+        n->inherit->prev->next = n->inherit->next;
+        lst_kill_node(n);
     }
+    lst_kill_node(l->dummy);
+    free(l);
 }

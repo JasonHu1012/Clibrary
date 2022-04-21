@@ -37,7 +37,7 @@ void que_pop(queue *q, void *dst) {
     q->size--;
 }
 
-void que_head(queue *q, void *dst) {
+void que_top(queue *q, void *dst) {
     assert(dst);
     memcpy(dst, q->head->content, q->width);
 }

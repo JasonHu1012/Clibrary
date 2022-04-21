@@ -12,6 +12,7 @@ list_node *lst_init_node(void *src, int width);
 // append either data or node; the other should be NULL
 void lst_append(list *l, void *src, list_node *n);
 void lst_remove(list *l, list_node *n, bool kill_node);
+int lst_size(list *l);
 void lst_iter_init(list *l, bool reverse);
 // return false when reaching end; should call lst_iter_init first
 bool lst_iter(list *l, void *dst);
