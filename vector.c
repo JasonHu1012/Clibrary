@@ -26,7 +26,7 @@ vector *vec_random(int dim, double min, double max, bool integer) {
 }
 
 #define VEC_FROM_ARR\
-    assert(arr && dim > 0);\
+    assert(dim > 0);\
     vector *output = (vector *)malloc(sizeof(vector));\
     output->dim = dim;\
     output->entry = (double *)malloc(sizeof(double) * dim);\

@@ -11,7 +11,6 @@ queue *que_init(int width) {
 }
 
 void que_push(queue *q, void *src) {
-    assert(src);
     lnode *n = lnd_init(src, q->width);
     if (!q->tail) {
         q->head = n;
@@ -38,7 +37,6 @@ void que_pop(queue *q, void *dst) {
 }
 
 void que_top(queue *q, void *dst) {
-    assert(dst);
     memcpy(dst, q->head->content, q->width);
 }
 

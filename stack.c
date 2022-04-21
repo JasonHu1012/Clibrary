@@ -10,7 +10,6 @@ stack *stk_init(int width) {
 }
 
 void stk_push(stack *s, void *src) {
-    assert(src);
     lnode *n = lnd_init(src, s->width);
     n->next = s->top;
     s->top = n;
