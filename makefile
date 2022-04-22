@@ -1,3 +1,5 @@
+CC=gcc
+
 liblist.a: list.o lnode.o
 	ar rcs liblist.a list.o lnode.o
 libmatrix.a: matrix.o
@@ -12,23 +14,23 @@ libndarray.a: ndarray.o
 	ar rcs libndarray.a ndarray.o
 
 list.o: list.c list.h
-	gcc -c list.c -o list.o
+	$(CC) -c list.c -o list.o
 lnode.o: lnode.c lnode.h
-	gcc -c lnode.c -o lnode.o
+	$(CC) -c lnode.c -o lnode.o
 matrix.o: matrix.c matrix.h
-	gcc -c matrix.c -o matrix.o
+	$(CC) -c matrix.c -o matrix.o
 queue.o: queue.c queue.h
-	gcc -c queue.c -o queue.o
+	$(CC) -c queue.c -o queue.o
 stack.o: stack.c stack.h
-	gcc -c stack.c -o stack.o
+	$(CC) -c stack.c -o stack.o
 vector.o: vector.c vector.h
-	gcc -c vector.c -o vector.o
+	$(CC) -c vector.c -o vector.o
 ndarray.o: ndarray.c ndarray.h
-	gcc -c ndarray.c -o ndarray.o
+	$(CC) -c ndarray.c -o ndarray.o
 
 clean:
 	rm -f *.a *.o sample
 run: sample
 	./sample
 sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a
-	gcc sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -lndarray -o sample
+	$(CC) sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -lndarray -o sample
