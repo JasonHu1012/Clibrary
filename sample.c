@@ -84,6 +84,7 @@ void vector_sample() {
     vec_print(v);
     vec_kill(v);
     printf("%f\n", vec_dot(iv, dv)); // 25.9
+    printf("%f\n", vec_len(iv)); // 5.83
     vec_kill(iv);
     vec_kill(dv);
 }
