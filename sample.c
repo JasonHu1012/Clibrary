@@ -5,8 +5,11 @@
 #include "vector.h"
 #include "ndarray.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 void matrix_sample() {
+    printf("---matrix---\n");
     matrix *a = mat_random(3, 4, 1.5, 9.5, false);
     matrix *b = mat_random(4, 2, 2.4, 10.9, true);
     matrix *m = mat_multiply(a, b);
@@ -15,10 +18,10 @@ void matrix_sample() {
     *mat_entry(m, 2, 2) = 100;
     mat_print(m);
     mat_kill(m);
-    printf("\n");
 }
 
 void list_sample() {
+    printf("---list---\n");
     list *l = lst_init(sizeof(int));
     int i = 30;
     lst_append(l, &i, NULL);
@@ -33,10 +36,10 @@ void list_sample() {
     lst_remove(l, n, true);
     printf("%d\n", lst_size(l)); // 1
     lst_kill(l);
-    printf("\n");
 }
 
 void stack_sample() {
+    printf("---stack---\n");
     stack *s = stk_init(sizeof(int));
     int i = 100;
     stk_push(s, &i);
@@ -50,10 +53,10 @@ void stack_sample() {
     stk_pop(s, &i);
     printf("%d\n", i); // 100
     stk_kill(s);
-    printf("\n");
 }
 
 void queue_sample() {
+    printf("---queue---\n");
     queue *q = que_init(sizeof(int));
     int i = 100;
     que_push(q, &i);
@@ -67,10 +70,10 @@ void queue_sample() {
     que_pop(q, &i);
     printf("%d\n", i); // 200
     que_kill(q);
-    printf("\n");
 }
 
 void vector_sample() {
+    printf("---vector---\n");
     int iarr[3] = {0, 3, 5};
     vector *iv = vec_iarr(iarr, 3);
     double darr[3] = {5.2, 0.3, 5.0};
@@ -83,28 +86,40 @@ void vector_sample() {
     printf("%f\n", vec_dot(iv, dv)); // 25.9
     vec_kill(iv);
     vec_kill(dv);
-    printf("\n");
 }
 
 void ndarray_sample() {
-    int size[3] = {3, 6, 9};
-    ndarray *a = nda_init(size, 3, sizeof(int));
+    printf("---ndarray---\n");
+    int dim = rand() % 5 + 1;
+    printf("dimension: %d\n", dim);
+    int *size = (int *)malloc(sizeof(int) * dim);
+    for (int i = 0; i < dim; i++) {
+        size[i] = 5;
+    }
+    ndarray *a = nda_init(size, dim, sizeof(int));
     int i = 100;
-    int index[3] = {1, 4, 8};
+    printf("index:");
+    int *index = (int *)malloc(sizeof(int) * dim);
+    for (int i = 0; i < dim; i++) {
+        index[i] = rand() % 5;
+        printf(" %d", index[i]);
+    }
+    printf("\n");
     nda_set(a, index, &i);
     i = 0;
     nda_get(a, index, &i);
     printf("%d\n", i); // 100
     nda_kill(a);
-    printf("\n");
 }
 
 int main() {
+    srand(time(NULL));
+    ndarray_sample();
+    return 0;
     matrix_sample();
     list_sample();
     stack_sample();
     queue_sample();
     vector_sample();
-    ndarray_sample();
     return 0;
 }
