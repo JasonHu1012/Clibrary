@@ -10,6 +10,7 @@ typedef struct list_node list_node;
 list *lst_init(int width);
 list_node *lst_init_node(void *src, int width);
 // append either data or node; the other should be NULL
+// if node, the data won't be copied into the list; user should keep the data
 void lst_append(list *l, void *src, list_node *n);
 void lst_remove(list *l, list_node *n, bool kill_node);
 int lst_size(list *l);
