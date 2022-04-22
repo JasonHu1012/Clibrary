@@ -3,6 +3,7 @@
 #include "stack.h"
 #include "queue.h"
 #include "vector.h"
+#include "ndarray.h"
 #include <stdio.h>
 
 void matrix_sample() {
@@ -14,6 +15,7 @@ void matrix_sample() {
     *mat_entry(m, 2, 2) = 100;
     mat_print(m);
     mat_kill(m);
+    printf("\n");
 }
 
 void list_sample() {
@@ -31,6 +33,7 @@ void list_sample() {
     lst_remove(l, n, true);
     printf("%d\n", lst_size(l)); // 1
     lst_kill(l);
+    printf("\n");
 }
 
 void stack_sample() {
@@ -47,6 +50,7 @@ void stack_sample() {
     stk_pop(s, &i);
     printf("%d\n", i); // 100
     stk_kill(s);
+    printf("\n");
 }
 
 void queue_sample() {
@@ -63,6 +67,7 @@ void queue_sample() {
     que_pop(q, &i);
     printf("%d\n", i); // 200
     que_kill(q);
+    printf("\n");
 }
 
 void vector_sample() {
@@ -75,9 +80,23 @@ void vector_sample() {
     *vec_entry(v, 1) = 1000;
     vec_print(v);
     vec_kill(v);
-    printf("%f\n", vec_dot(iv, dv));
+    printf("%f\n", vec_dot(iv, dv)); // 25.9
     vec_kill(iv);
     vec_kill(dv);
+    printf("\n");
+}
+
+void ndarray_sample() {
+    int size[3] = {3, 6, 9};
+    ndarray *a = nda_init(size, 3, sizeof(int));
+    int i = 100;
+    int index[3] = {1, 4, 8};
+    nda_set(a, index, &i);
+    i = 0;
+    nda_get(a, index, &i);
+    printf("%d\n", i); // 100
+    nda_kill(a);
+    printf("\n");
 }
 
 int main() {
@@ -86,5 +105,6 @@ int main() {
     stack_sample();
     queue_sample();
     vector_sample();
+    ndarray_sample();
     return 0;
 }

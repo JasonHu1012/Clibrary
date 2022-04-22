@@ -8,6 +8,8 @@ libstack.a: stack.o lnode.o
 	ar rcs libstack.a stack.o lnode.o
 libvector.a: vector.o
 	ar rcs libvector.a vector.o
+libndarray.a: ndarray.o
+	ar rcs libndarray.a ndarray.o
 
 list.o: list.c list.h
 	gcc -c list.c -o list.o
@@ -21,10 +23,12 @@ stack.o: stack.c stack.h
 	gcc -c stack.c -o stack.o
 vector.o: vector.c vector.h
 	gcc -c vector.c -o vector.o
+ndarray.o: ndarray.c ndarray.h
+	gcc -c ndarray.c -o ndarray.o
 
 clean:
 	rm -f *.a *.o sample
 run: sample
 	./sample
-sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a
-	gcc sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -o sample
+sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a
+	gcc sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -lndarray -o sample
