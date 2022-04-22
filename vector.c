@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
 
 vector *vec_zero(int dim) {
     assert(dim > 0);
@@ -90,6 +91,14 @@ double vec_dot(vector *a, vector *b) {
 double *vec_entry(vector *v, int index) {
     assert(index >= 1 && index <= v->dim);
     return &v->entry[index - 1];
+}
+
+double vec_len(vector *v) {
+    double output = 0;
+    for (int i = 0; i < v->dim; i++) {
+        output += v->entry[i] * v->entry[i];
+    }
+    return sqrt(output);
 }
 
 void vec_print(vector *v) {

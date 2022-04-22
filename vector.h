@@ -15,6 +15,7 @@ vector *vec_mul(vector *v, double n);
 double vec_dot(vector *a, vector *b);
 // 1-based; return the pointer of the entry
 double *vec_entry(vector *v, int index);
+double vec_len(vector *v);
 void vec_print(vector *v);
 void vec_kill(vector *v);
 
