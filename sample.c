@@ -114,12 +114,11 @@ void ndarray_sample() {
 
 int main() {
     srand(time(NULL));
-    ndarray_sample();
-    return 0;
     matrix_sample();
     list_sample();
     stack_sample();
     queue_sample();
     vector_sample();
+    ndarray_sample();
     return 0;
 }
