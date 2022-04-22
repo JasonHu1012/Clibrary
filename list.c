@@ -23,7 +23,7 @@ list_node *lst_init_node(void *src, int width) {
     list_node *output = (list_node *)malloc(sizeof(list_node));
     void *temp = malloc(sizeof(width) + sizeof(list_node *));
     memcpy(temp, src, width);
-    memcpy(temp + width, &output, sizeof(list_node *));
+    memcpy((char *)temp + width, &output, sizeof(list_node *));
     // content = [real content][list_node *]
     output->inherit = lnd_init(temp, width + sizeof(list_node *));
     free(temp);
@@ -93,7 +93,7 @@ void lst_kill_node(list_node *n) {
 void lst_kill(list *l) {
     while (l->size--) {
         list_node *n;
-        memcpy(&n, l->dummy->inherit->next->content + l->width, sizeof(list_node *));
+        memcpy(&n, (char *)l->dummy->inherit->next->content + l->width, sizeof(list_node *));
         n->inherit->next->prev = n->inherit->prev;
         n->inherit->prev->next = n->inherit->next;
         lst_kill_node(n);

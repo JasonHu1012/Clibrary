@@ -18,7 +18,7 @@ static _ndarray *init(int *size, int dim, int width) {
         output->size_or_width = size[0];
     }
     else {
-        output->content = malloc(width);
+        output->content = (_ndarray **)malloc(width);
         output->size_or_width = width;
     }
     return output;
