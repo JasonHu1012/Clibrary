@@ -100,9 +100,9 @@ void ndarray_sample() {
     int i = 100;
     printf("index:");
     int *index = (int *)malloc(sizeof(int) * dim);
-    for (int i = 0; i < dim; i++) {
-        index[i] = rand() % 5;
-        printf(" %d", index[i]);
+    for (int d = 0; d < dim; d++) {
+        index[d] = rand() % 5;
+        printf(" %d", index[d]);
     }
     printf("\n");
     nda_set(a, index, &i);
