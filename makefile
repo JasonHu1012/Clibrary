@@ -1,4 +1,7 @@
+# MacOS
 CC=gcc
+# Linux
+#CC=g++
 
 liblist.a: list.o lnode.o
 	ar rcs liblist.a list.o lnode.o
