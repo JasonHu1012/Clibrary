@@ -4,6 +4,7 @@
 #include <assert.h>
 
 stack *stk_init(int width) {
+    assert(width > 0);
     stack *output = (stack *)calloc(1, sizeof(stack));
     output->width = width;
     return output;
