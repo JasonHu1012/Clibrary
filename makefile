@@ -15,6 +15,8 @@ libvector.a: vector.o
 	ar rcs libvector.a vector.o
 libndarray.a: ndarray.o
 	ar rcs libndarray.a ndarray.o
+libfunc.a: func.o
+	ar rcs libfunc.a func.o
 
 list.o: list.c list.h
 	$(CC) -c list.c -o list.o
@@ -30,10 +32,12 @@ vector.o: vector.c vector.h
 	$(CC) -c vector.c -o vector.o
 ndarray.o: ndarray.c ndarray.h
 	$(CC) -c ndarray.c -o ndarray.o
+func.o: func.c func.h
+	$(CC) -c func.c -o func.o
 
 clean:
 	rm -f *.a *.o sample
 run: sample
 	./sample
-sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a
-	$(CC) sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -lndarray -o sample
+sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a libfunc.a
+	$(CC) sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -lndarray -lfunc -o sample
