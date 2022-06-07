@@ -15,7 +15,7 @@ void *salloc(int width, int *len, int dim) {
     if (dim == 1) {
         return output;
     }
-    void **cur = output;
+    void **cur = (void **)output;
     char *target = (char *)&cur[len[0]];
     temp = len[0];
     for (int i = 1; i < dim - 1; i++) {
