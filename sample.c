@@ -145,7 +145,7 @@ void ndarray_sample() {
 void func_sample() {
     printf("---func---\n");
     int len[3] = {5, 5, 5};
-    int ***arr = salloc(sizeof(int), len, 3);
+    int ***arr = (int ***)salloc(sizeof(int), len, 3);
     int n = 100;
     printf("n = 100;\nn: %d\n", n);
     arr[2][3][4] = n;
