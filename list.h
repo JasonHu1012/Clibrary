@@ -28,7 +28,8 @@ void lst_kill_iter(list_iter *i);
 // if the node is still in the list, it won't be removed
 // this function only indicates that the node should be killed when removed
 void lst_kill_node(list_node *n);
-// iter will become invalid, should kill iter first to avoid memory leak
+// lst_kill_iter can't be called after lst_kill
+// node created by user won't be killed
 void lst_kill(list *l);
 
 struct list {
