@@ -4,6 +4,7 @@
 #include "queue.h"
 #include "vector.h"
 #include "ndarray.h"
+#include "func.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -23,19 +24,47 @@ void matrix_sample() {
 void list_sample() {
     printf("---list---\n");
     list *l = lst_init(sizeof(int));
-    int i = 30;
-    lst_append(l, &i, NULL);
+    int i = 100;
+    lst_add_head(l, &i, NULL);
+    i = 200;
+    lst_add_head(l, &i, NULL);
+    i = 300;
+    lst_add_tail(l, &i, NULL);
+    // 200 100 300
+    list_iter *it = lst_init_iter(l, false);
+    printf("list content:\n");
+    while (lst_iter_next(it, &i)) {
+        printf("%d ", i);
+    }
+    printf("\n");
+    lst_iter_reset(it);
+    lst_iter_next(it, NULL);
+    lst_iter_next(it, NULL);
+    lst_iter_remove(it);
+    printf("remove 100\n");
+    list_iter *it2 = lst_init_iter(l, true);
+    printf("list content (reverse):\n");
+    while (lst_iter_next(it2, &i)) {
+        printf("%d ", i);
+    }
+    printf("\n");
+    lst_kill_iter(it2);
+    printf("list size: %d\n", lst_size(l));
     i = 50;
     list_node *n = lst_init_node(&i, sizeof(int));
-    lst_append(l, NULL, n);
-    lst_iter_init(l, false);
-    i = 0;
-    while (lst_iter(l, &i)) {
-        printf("%d\n", i); // 30 50
+    lst_iter_next(it, &i);
+    printf("iter current at: %d\n", i);
+    lst_add_iter_prev(it, NULL, n);
+    printf("add 50 before 300\n");
+    lst_iter_reset(it);
+    printf("list content:\n");
+    while (lst_iter_next(it, &i)) {
+        printf("%d ", i);
     }
-    lst_remove(l, n, true);
-    printf("%d\n", lst_size(l)); // 1
+    printf("\n");
+    lst_kill_iter(it);
     lst_kill(l);
+    lst_kill_node(n);
 }
 
 void stack_sample() {
@@ -113,6 +142,21 @@ void ndarray_sample() {
     nda_kill(a);
 }
 
+void func_sample() {
+    printf("---func---\n");
+    int len[3] = {5, 5, 5};
+    int ***arr = salloc(sizeof(int), len, 3);
+    int n = 100;
+    printf("n = 100;\nn: %d\n", n);
+    arr[2][3][4] = n;
+    printf("arr[2][3][4] = n;\narr[2][3][4]: %d\n", arr[2][3][4]);
+    n = 0;
+    printf("n = 0;\nn: %d\n", n);
+    n = arr[2][3][4];
+    printf("n = arr[2][3][4];\nn: %d\n", n);
+    free(arr);
+}
+
 int main() {
     srand(time(NULL));
     matrix_sample();
@@ -121,5 +165,6 @@ int main() {
     queue_sample();
     vector_sample();
     ndarray_sample();
+    func_sample();
     return 0;
 }

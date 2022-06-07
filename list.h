@@ -6,32 +6,50 @@
 
 typedef struct list list;
 typedef struct list_node list_node;
+typedef struct list_iter list_iter;
 
 list *lst_init(int width);
 list_node *lst_init_node(void *src, int width);
-// append either data or node; the other should be NULL
+list_iter *lst_init_iter(list *l, bool reverse);
+// add either data or node; the other should be NULL
 // if node, the node won't be copied into the list, and user should keep it
-void lst_append(list *l, void *src, list_node *n);
-void lst_remove(list *l, list_node *n, bool kill_node);
+void lst_add_head(list *l, void *src, list_node *n);
+void lst_add_tail(list *l, void *src, list_node *n);
+void lst_add_iter_next(list_iter *i, void *src, list_node *n);
+void lst_add_iter_prev(list_iter *i, void *src, list_node *n);
+// remove the node from list
+void lst_remove(list_node *n);
+void lst_iter_remove(list_iter *i);
 int lst_size(list *l);
-void lst_iter_init(list *l, bool reverse);
-// return false when reaching end; should call lst_iter_init first
-bool lst_iter(list *l, void *dst);
+// return false when reaching end
+bool lst_iter_next(list_iter *i, void *dst);
+void lst_iter_reset(list_iter *i);
+void lst_kill_iter(list_iter *i);
+// if the node is still in the list, it won't be removed
+// this function only indicates that the node should be killed when removed
 void lst_kill_node(list_node *n);
+// iter will become invalid, should kill iter first to avoid memory leak
 void lst_kill(list *l);
 
 struct list {
     list_node *dummy;
-    lnode *iter;
     int size;
     int width;
-    bool reverse;
 };
 
 struct list_node {
     lnode *inherit;
-    int width;
     list *belong;
+    int uref; // user reference: 0 or 1
+    int oref; // other reference: list(one) and iter(many)
+              // node will be removed from list when oref is 0
+              // node will be killed when uref and oref are both 0
+};
+
+struct list_iter {
+    list_node *cur;
+    bool reverse;
+    bool end;
 };
 
 #endif
