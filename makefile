@@ -1,7 +1,4 @@
-# MacOS
 CC=gcc
-# Linux
-#CC=g++
 
 liblist.a: list.o lnode.o
 	ar rcs liblist.a list.o lnode.o
@@ -40,4 +37,4 @@ clean:
 run: sample
 	./sample
 sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a libfunc.a
-	$(CC) sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -lndarray -lfunc -o sample
+	$(CC) sample.c -L . -lm -llist -lmatrix -lqueue -lstack -lvector -lndarray -lfunc -o sample
