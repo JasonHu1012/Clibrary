@@ -7,6 +7,7 @@ typedef struct vector vector;
 
 vector *vec_zero(int dim);
 vector *vec_random(int dim, double min, double max, bool integer);
+// build vector from int/double array
 vector *vec_iarr(int *arr, int dim);
 vector *vec_darr(double *arr, int dim);
 vector *vec_add(vector *a, vector *b);
@@ -17,6 +18,7 @@ double vec_dot(vector *a, vector *b);
 double *vec_entry(vector *v, int index);
 double vec_len(vector *v);
 void vec_print(vector *v);
+vector *vec_copy(vector *v);
 void vec_kill(vector *v);
 
 struct vector {

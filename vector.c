@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include <string.h>
 
 vector *vec_zero(int dim) {
     assert(dim > 0);
@@ -108,6 +109,15 @@ void vec_print(vector *v) {
         printf(" %.2e", v->entry[i]);
     }
     printf("\n");
+}
+
+vector *vec_copy(vector *v) {
+    vector *output = (vector *)malloc(sizeof(vector));
+    int dim = v->dim;
+    output->dim = dim;
+    output->entry = (double *)malloc(sizeof(double) * dim);
+    memcpy(output->entry, v->entry, sizeof(double) * dim);
+    return output;
 }
 
 void vec_kill(vector *v) {
