@@ -3,6 +3,12 @@
 #include <string.h>
 #include <assert.h>
 
+struct stack {
+    int width;
+    int size;
+    lnode *top;
+};
+
 stack *stk_init(int width) {
     assert(width > 0);
     stack *output = (stack *)calloc(1, sizeof(stack));

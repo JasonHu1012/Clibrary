@@ -12,11 +12,4 @@ void que_top(queue *q, void *dst);
 int que_size(queue *q);
 void que_kill(queue *q);
 
-struct queue {
-    int width;
-    int size;
-    lnode *head;
-    lnode *tail;
-};
-
 #endif

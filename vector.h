@@ -21,9 +21,4 @@ void vec_print(vector *v);
 vector *vec_copy(vector *v);
 void vec_kill(vector *v);
 
-struct vector {
-    int dim;
-    double *entry;
-};
-
 #endif

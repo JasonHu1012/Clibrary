@@ -3,9 +3,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct _ndarray _ndarray;
+
 struct _ndarray {
     _ndarray **content;
     int size_or_width;
+};
+
+struct ndarray {
+    _ndarray **content;
+    int size;
+    int dim;
 };
 
 static _ndarray *init(int *size, int dim, int width) {

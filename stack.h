@@ -12,10 +12,4 @@ void stk_top(stack *s, void *dst);
 int stk_size(stack *s);
 void stk_kill(stack *s);
 
-struct stack {
-    int width;
-    int size;
-    lnode *top;
-};
-
 #endif

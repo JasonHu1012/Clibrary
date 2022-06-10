@@ -21,10 +21,4 @@ matrix *mat_multiply(matrix *a, matrix *b);
 matrix *mat_multiple(matrix *m, double n);
 matrix *mat_multiply_strassen(matrix *a, matrix *b);
 
-struct matrix {
-    int row;
-    int col;
-    double *entry;
-};
-
 #endif

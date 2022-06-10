@@ -4,6 +4,12 @@
 #include <time.h>
 #include <assert.h>
 
+struct matrix {
+    int row;
+    int col;
+    double *entry;
+};
+
 static matrix *new_mat(int row_size, int col_size) {
     matrix *output = (matrix *)malloc(sizeof(matrix));
     output->row = row_size;

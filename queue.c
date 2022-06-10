@@ -3,6 +3,13 @@
 #include <string.h>
 #include <assert.h>
 
+struct queue {
+    int width;
+    int size;
+    lnode *head;
+    lnode *tail;
+};
+
 queue *que_init(int width) {
     assert(width > 0);
     queue *output = (queue *)calloc(1, sizeof(queue));

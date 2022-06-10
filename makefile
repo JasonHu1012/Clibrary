@@ -14,6 +14,8 @@ libndarray.a: ndarray.o
 	ar rcs libndarray.a ndarray.o
 libfunc.a: func.o
 	ar rcs libfunc.a func.o
+libcollision.a: collision.o list.o lnode.o vector.o ndarray.o
+	ar rcs libcollision.a collision.o list.o lnode.o vector.o ndarray.o
 
 list.o: list.c list.h
 	$(CC) -c list.c -o list.o
@@ -31,6 +33,8 @@ ndarray.o: ndarray.c ndarray.h
 	$(CC) -c ndarray.c -o ndarray.o
 func.o: func.c func.h
 	$(CC) -c func.c -o func.o
+collision.o: collision.c collision.h
+	$(CC) -c collision.c -o collision.o
 
 clean:
 	rm -f *.a *.o sample

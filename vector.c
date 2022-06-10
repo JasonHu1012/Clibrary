@@ -6,6 +6,11 @@
 #include <math.h>
 #include <string.h>
 
+struct vector {
+    int dim;
+    double *entry;
+};
+
 vector *vec_zero(int dim) {
     assert(dim > 0);
     vector *output = (vector *)malloc(sizeof(vector));

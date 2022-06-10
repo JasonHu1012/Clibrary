@@ -4,6 +4,27 @@
 #include <string.h>
 #include <stdio.h>
 
+struct list {
+    list_node *dummy;
+    int size;
+    int width;
+};
+
+struct list_node {
+    lnode *inherit;
+    list *belong;
+    int uref; // user reference: 0 or 1
+    int oref; // other reference: list(one) and iter(many)
+              // node will be removed from list when oref is 0
+              // node will be killed when uref and oref are both 0
+};
+
+struct list_iter {
+    list_node *cur;
+    bool reverse;
+    bool end;
+};
+
 list *lst_init(int width) {
     assert(width > 0);
     list *output = (list *)malloc(sizeof(list));
