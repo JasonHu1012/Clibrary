@@ -35,7 +35,4 @@ void lst_kill_node(list_node *n);
 // node created by user won't be killed
 void lst_kill(list *l);
 
-// used in collision library, not for user
-list_node *lst_malloc_list_node();
-
 #endif

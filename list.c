@@ -209,7 +209,3 @@ void lst_kill(list *l) {
     lst_kill_node(l->dummy);
     free(l);
 }
-
-list_node *lst_malloc_list_node() {
-    return (list_node *)malloc(sizeof(list_node));
-}
