@@ -37,7 +37,7 @@ vector *vec_random(int dim, double min, double max, bool integer) {
     output->dim = dim;\
     output->entry = (double *)malloc(sizeof(double) * dim);\
     for (int i = 0; i < dim; i++) {\
-        output->entry[i] = arr[i];\
+        output->entry[i] = (double)arr[i];\
     }\
     return output;
 

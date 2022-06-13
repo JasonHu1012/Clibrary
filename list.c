@@ -172,6 +172,10 @@ void lst_kill_iter(list_iter *i) {
     free(i);
 }
 
+void lst_node_content(list_node *n, void *dst) {
+    memcpy(dst, (char *)n->inherit->content + sizeof(list_node *), n->belong->width);
+}
+
 void lst_kill_node(list_node *n) {
     if (n->uref) {
         n->uref = 0;
