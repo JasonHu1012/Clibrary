@@ -5,9 +5,12 @@
 #include "vector.h"
 #include "ndarray.h"
 #include "func.h"
+#include "collision.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 void matrix_sample() {
     printf("---matrix---\n");
@@ -157,8 +160,51 @@ void func_sample() {
     free(arr);
 }
 
+double square_border(vector *v) {
+    if (fabs(*vec_entry(v, 1)) > 5.0) {
+        return -1;
+    }
+    if (fabs(*vec_entry(v, 2)) > 5.0) {
+        return -1;
+    }
+    return 1;
+}
+
+double ball_obj(vector *v) {
+    return 1 - pow(*vec_entry(v, 1), 2) + pow(*vec_entry(v, 2), 2);
+}
+
+void collision_sample() {
+    printf("---collision---\n");
+    double lower_bound[2] = {-10, 10};
+    double upper_bound[2] = {-10, 10};
+    cls_stage *stage = cls_init_stage(2, square_border, lower_bound, upper_bound, 2);
+    for (int i = 0; i < 9; i++) {
+        vector *a = vec_iarr((int[]){i % 3 * 3 - 3, i / 3 * 3 - 3}, 2);
+        vector *b = vec_random(2, -2, 2, false);
+        cls_object *obj = cls_init_object(ball_obj, 1, a, b);
+        vec_kill(a);
+        vec_kill(b);
+        for (int j = 0; j < 8; j++) {
+            a = vec_darr((double[]){cos(j / 8 * 2 * M_PI), sin(j / 8 * 2 * M_PI)}, 2);
+            b = vec_copy(a);
+            cls_add_detect_point(obj, a, b);
+            vec_kill(a);
+            vec_kill(b);
+        }
+        cls_add_object(stage, obj);
+        cls_kill_object(obj);
+    }
+    cls_print(stage);
+    cls_kill_stage(stage);
+}
+
 int main() {
     srand(time(NULL));
+
+    collision_sample();
+    return 0;
+
     matrix_sample();
     list_sample();
     stack_sample();

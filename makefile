@@ -40,5 +40,5 @@ clean:
 	rm -f *.a *.o sample
 run: sample
 	./sample
-sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a libfunc.a
-	$(CC) sample.c -L . -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -o sample
+sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a libfunc.a libcollision.a
+	$(CC) sample.c -o sample -L. -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -lcollision
