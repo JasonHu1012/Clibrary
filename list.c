@@ -172,12 +172,12 @@ void lst_kill_iter(list_iter *i) {
     free(i);
 }
 
-void lst_get_node(list_node *n, void *dst) {
-    memcpy(dst, (char *)n->inherit->content + sizeof(list_node *), n->belong->width);
+void lst_get_node(list_node *n, void *dst, int width) {
+    memcpy(dst, (char *)n->inherit->content + sizeof(list_node *), width);
 }
 
-void lst_set_node(list_node *n, void *src) {
-    memcpy((char *)n->inherit->content + sizeof(list_node *), src, n->belong->width);
+void lst_set_node(list_node *n, void *src, int width) {
+    memcpy((char *)n->inherit->content + sizeof(list_node *), src, width);
 }
 
 void lst_kill_node(list_node *n) {
