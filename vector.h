@@ -19,6 +19,7 @@ double *vec_entry(vector *v, int index);
 double vec_len(vector *v);
 void vec_print(vector *v);
 vector *vec_copy(vector *v);
+vector *vec_unit(vector *v);
 void vec_kill(vector *v);
 
 #endif

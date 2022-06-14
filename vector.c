@@ -125,6 +125,18 @@ vector *vec_copy(vector *v) {
     return output;
 }
 
+vector *vec_unit(vector *v) {
+    vector *output = (vector *)malloc(sizeof(vector));
+    double l = vec_len(v);
+    int dim = v->dim;
+    output->dim = dim;
+    output->entry = (double *)malloc(sizeof(double) * dim);
+    for (int i = 0; i < dim; i++) {
+        output->entry[i] = v->entry[i] / l;
+    }
+    return output;
+}
+
 void vec_kill(vector *v) {
     free(v->entry);
     free(v);
