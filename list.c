@@ -42,13 +42,12 @@ list *lst_init(int width) {
 list_node *lst_init_node(void *src, int width) {
     // width = 0 to be dummy node, used in lst_init
     assert(width >= 0);
-    if (width) {
-        assert(src);
-    }
     list_node *output = (list_node *)malloc(sizeof(list_node));
     void *temp = malloc(sizeof(list_node *) + width);
     memcpy(temp, &output, sizeof(list_node *));
-    memcpy((char *)temp + sizeof(list_node *), src, width);
+    if (src) {
+        memcpy((char *)temp + sizeof(list_node *), src, width);
+    }
     // content = [list_node *][real content]
     output->inherit = lnd_init(temp, sizeof(list_node *) + width);
     free(temp);

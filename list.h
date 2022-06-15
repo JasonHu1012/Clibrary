@@ -9,6 +9,7 @@ typedef struct list_node list_node;
 typedef struct list_iter list_iter;
 
 list *lst_init(int width);
+// src can be NULL; user can set the node later
 list_node *lst_init_node(void *src, int width);
 list_iter *lst_init_iter(list *l, bool reverse);
 // add either data or node; the other should be NULL
