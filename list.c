@@ -13,6 +13,7 @@ struct list {
 struct list_node {
     lnode *inherit;
     list *belong;
+    int width;
     int uref; // user reference: 0 or 1
     int oref; // other reference: list(one) and iter(many)
               // node will be removed from list when oref is 0
@@ -52,6 +53,7 @@ list_node *lst_init_node(void *src, int width) {
     output->inherit = lnd_init(temp, sizeof(list_node *) + width);
     free(temp);
     output->belong = NULL;
+    output->width = width;
     output->uref = 1;
     output->oref = 0;
     return output;
@@ -74,6 +76,7 @@ static void insert(list *l, void *src, list_node *n, lnode *a, lnode *b) {
     }
     assert(!n->belong);
     assert(!n->inherit->prev && !n->inherit->next);
+    assert(n->width == l->width);
     n->belong = l;
     n->oref++;
     n->inherit->next = b;
@@ -151,7 +154,7 @@ bool lst_iter_next(list_iter *i, void *dst) {
         return false;
     }
     if (dst) {
-        memcpy(dst, (char *)i->cur->inherit->content + sizeof(list_node *), i->cur->belong->width);
+        memcpy(dst, (char *)i->cur->inherit->content + sizeof(list_node *), i->cur->width);
     }
     return true;
 }
@@ -171,12 +174,12 @@ void lst_kill_iter(list_iter *i) {
     free(i);
 }
 
-void lst_get_node(list_node *n, void *dst, int width) {
-    memcpy(dst, (char *)n->inherit->content + sizeof(list_node *), width);
+void lst_get_node(list_node *n, void *dst) {
+    memcpy(dst, (char *)n->inherit->content + sizeof(list_node *), n->width);
 }
 
-void lst_set_node(list_node *n, void *src, int width) {
-    memcpy((char *)n->inherit->content + sizeof(list_node *), src, width);
+void lst_set_node(list_node *n, void *src) {
+    memcpy((char *)n->inherit->content + sizeof(list_node *), src, n->width);
 }
 
 void lst_kill_node(list_node *n) {

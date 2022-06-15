@@ -27,8 +27,8 @@ bool lst_iter_next(list_iter *i, void *dst);
 void lst_iter_reset(list_iter *i);
 void lst_kill_iter(list_iter *i);
 // get and set node's content
-void lst_get_node(list_node *n, void *dst, int width);
-void lst_set_node(list_node *n, void *src, int width);
+void lst_get_node(list_node *n, void *dst);
+void lst_set_node(list_node *n, void *src);
 // if the node is still in the list, it won't be removed
 // this function only indicates that the node should be killed when removed
 void lst_kill_node(list_node *n);
