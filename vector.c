@@ -137,6 +137,10 @@ vector *vec_unit(vector *v) {
     return output;
 }
 
+int vec_dim(vector *v) {
+    return v->dim;
+}
+
 void vec_kill(vector *v) {
     free(v->entry);
     free(v);

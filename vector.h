@@ -20,6 +20,7 @@ double vec_len(vector *v);
 void vec_print(vector *v);
 vector *vec_copy(vector *v);
 vector *vec_unit(vector *v);
+int vec_dim(vector *v);
 void vec_kill(vector *v);
 
 #endif
