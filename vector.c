@@ -84,6 +84,31 @@ vector *vec_mul(vector *v, double n) {
     return output;
 }
 
+vector *vec_copy(vector *v) {
+    vector *output = (vector *)malloc(sizeof(vector));
+    int dim = v->dim;
+    output->dim = dim;
+    output->entry = (double *)malloc(sizeof(double) * dim);
+    memcpy(output->entry, v->entry, sizeof(double) * dim);
+    return output;
+}
+
+vector *vec_unit(vector *v) {
+    vector *output = (vector *)malloc(sizeof(vector));
+    double l = vec_len(v);
+    int dim = v->dim;
+    output->dim = dim;
+    output->entry = (double *)malloc(sizeof(double) * dim);
+    for (int i = 0; i < dim; i++) {
+        output->entry[i] = v->entry[i] / l;
+    }
+    return output;
+}
+
+vector *vec_project(vector *a, vector *b) {
+    return vec_mul(b, vec_dot(a, b) / pow(vec_len(b), 2));
+}
+
 double vec_dot(vector *a, vector *b) {
     assert(a->dim == b->dim);
     double output = 0;
@@ -107,6 +132,10 @@ double vec_len(vector *v) {
     return sqrt(output);
 }
 
+int vec_dim(vector *v) {
+    return v->dim;
+}
+
 void vec_print(vector *v) {
     printf("%.2e", v->entry[0]);
     int dim = v->dim;
@@ -114,31 +143,6 @@ void vec_print(vector *v) {
         printf(" %.2e", v->entry[i]);
     }
     printf("\n");
-}
-
-vector *vec_copy(vector *v) {
-    vector *output = (vector *)malloc(sizeof(vector));
-    int dim = v->dim;
-    output->dim = dim;
-    output->entry = (double *)malloc(sizeof(double) * dim);
-    memcpy(output->entry, v->entry, sizeof(double) * dim);
-    return output;
-}
-
-vector *vec_unit(vector *v) {
-    vector *output = (vector *)malloc(sizeof(vector));
-    double l = vec_len(v);
-    int dim = v->dim;
-    output->dim = dim;
-    output->entry = (double *)malloc(sizeof(double) * dim);
-    for (int i = 0; i < dim; i++) {
-        output->entry[i] = v->entry[i] / l;
-    }
-    return output;
-}
-
-int vec_dim(vector *v) {
-    return v->dim;
 }
 
 void vec_kill(vector *v) {
