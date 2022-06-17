@@ -168,18 +168,18 @@ void lst_iter_reset(list_iter *i) {
     check(last);
 }
 
-void lst_kill_iter(list_iter *i) {
-    i->cur->oref--;
-    check(i->cur);
-    free(i);
-}
-
 void lst_get_node(list_node *n, void *dst) {
     memcpy(dst, (char *)n->inherit->content + sizeof(list_node *), n->width);
 }
 
 void lst_set_node(list_node *n, void *src) {
     memcpy((char *)n->inherit->content + sizeof(list_node *), src, n->width);
+}
+
+void lst_kill_iter(list_iter *i) {
+    i->cur->oref--;
+    check(i->cur);
+    free(i);
 }
 
 void lst_kill_node(list_node *n) {

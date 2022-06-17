@@ -5,41 +5,34 @@
 #include "vector.h"
 #include "ndarray.h"
 
-typedef struct cls_stage cls_stage;
-typedef struct cls_object cls_object;
+typedef struct room room;
+typedef struct ball ball;
 
-cls_stage *cls_init_stage(
+room *cls_init_room( // room is a square
     int dim,
-    // border should return negative value when the point falls inside
-    // use vec_entry(v, 1 ~ dim) to access vector entry
-    double (*border)(vector *v),
-    double *lower_bound, // the range of the stage
-    double *upper_bound, // make sure the border falls within it
-    double max_obj_size // should be as small as possible
+    // the range of the room
+    double *range_min,
+    double *range_max,
+    double max_ball_radius // should be as small as possible for better performance
 );
-
-cls_object *cls_init_object(
-    double (*shape)(vector *v), // similar to the border of stage
+ball *cls_init_ball(
+    double radius,
     double mass,
     // user can kill the vectors afterwards
     vector *position,
     vector *velocity // measured in [length unit]/s
 );
-
-void cls_add_detect_point(
-    cls_object *obj,
-    // user can kill the vectors afterwards
-    vector *position, // make sure the point falls on the surface of the object
-    vector *normal // normal vector, which should point outwards
+// user can kill the ball afterwardss
+void cls_add_ball(room *r, ball *b);
+void cls_print(room *r);
+void cls_start(
+    room *r,
+    int interval, // measured in micro second,
+                  // should be small enough to avoid a ball going
+                  // through other balls or out of the room
+    int round // let round < 0 to run infinitely
 );
-
-// user can kill the object afterwardss
-void cls_add_object(cls_stage *stage, cls_object *obj);
-// interval is measured in micro second
-// let round = 0 to run infinately
-void cls_start(cls_stage *stage, int interval, int round);
-void cls_print(cls_stage *stage);
-void cls_kill_stage(cls_stage *stage);
-void cls_kill_object(cls_object *obj);
+void cls_kill_room(room *r);
+void cls_kill_ball(ball *b);
 
 #endif

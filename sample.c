@@ -111,6 +111,9 @@ void vector_sample() {
     double darr[3] = {5.2, 0.3, 5.0};
     vector *dv = vec_darr(darr, 3);
     vector *v = vec_add(iv, dv);
+    vector *pv = vec_project(iv, dv);
+    vec_print(pv);
+    vec_kill(pv);
     vec_print(v);
     *vec_entry(v, 1) = 1000;
     vec_print(v);
@@ -171,40 +174,29 @@ double square_border(vector *v) {
 }
 
 double ball_obj(vector *v) {
-    return 1 - pow(*vec_entry(v, 1), 2) + pow(*vec_entry(v, 2), 2);
+    return pow(*vec_entry(v, 1), 2) + pow(*vec_entry(v, 2), 2) - 1;
 }
 
 void collision_sample() {
     printf("---collision---\n");
-    double lower_bound[2] = {-10, 10};
-    double upper_bound[2] = {-10, 10};
-    cls_stage *stage = cls_init_stage(2, square_border, lower_bound, upper_bound, 2);
+    room *r = cls_init_room(2, (double[]){-5, -5}, (double[]){5, 5}, 1);
     for (int i = 0; i < 9; i++) {
-        vector *a = vec_iarr((int[]){i % 3 * 3 - 3, i / 3 * 3 - 3}, 2);
-        vector *b = vec_random(2, -2, 2, false);
-        cls_object *obj = cls_init_object(ball_obj, 1, a, b);
-        vec_kill(a);
-        vec_kill(b);
-        for (int j = 0; j < 8; j++) {
-            a = vec_darr((double[]){cos(j / 8 * 2 * M_PI), sin(j / 8 * 2 * M_PI)}, 2);
-            b = vec_copy(a);
-            cls_add_detect_point(obj, a, b);
-            vec_kill(a);
-            vec_kill(b);
-        }
-        cls_add_object(stage, obj);
-        cls_kill_object(obj);
+        vector *position = vec_iarr((int[]){i % 3 * 3 - 3, i / 3 * -3 + 3}, 2);
+        vector *velocity = vec_random(2, -20, 20, false);
+        ball *b = cls_init_ball(1, 1, position, velocity);
+        vec_kill(position);
+        vec_kill(velocity);
+        cls_add_ball(r, b);
+        cls_kill_ball(b);
     }
-    cls_print(stage);
-    cls_kill_stage(stage);
+    cls_print(r);
+    cls_start(r, 1000, 1000);
+    cls_print(r);
+    cls_kill_room(r);
 }
 
 int main() {
     srand(time(NULL));
-
-    collision_sample();
-    return 0;
-
     matrix_sample();
     list_sample();
     stack_sample();
@@ -212,5 +204,6 @@ int main() {
     vector_sample();
     ndarray_sample();
     func_sample();
+    collision_sample();
     return 0;
 }
