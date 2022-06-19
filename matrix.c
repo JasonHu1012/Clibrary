@@ -21,12 +21,7 @@ static matrix *new_mat(int row_size, int col_size) {
 matrix *mat_random(int row_size, int col_size, double min, double max, bool integer) {
     assert(row_size > 0 && col_size > 0);
     assert(min <= max);
-    static char init = 0;
     matrix *output = new_mat(row_size, col_size);
-    if (!init) {
-        srand((unsigned int)time(NULL));
-        init = 1;
-    }
     int i, s = row_size * col_size;
     for (i = 0; i < s; i++) {
         output->entry[i] = integer ? rand() % ((int)max - (int)min + 1) + (int)min : (max - min) * rand() / RAND_MAX + min;
