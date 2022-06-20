@@ -180,8 +180,8 @@ double ball_obj(vector *v) {
 void collision_sample() {
     printf("---collision---\n");
     room *r = cls_init_room(2, (double[]){-5, -5}, (double[]){5, 5}, 1);
-    for (int i = 0; i < 9; i++) {
-        vector *position = vec_iarr((int[]){i % 3 * 3 - 3, i / 3 * -3 + 3}, 2);
+    for (int i = 0; i < 4; i++) {
+        vector *position = vec_iarr((int[]){i % 2 * 4 - 2, i / 2 * -4 + 2}, 2);
         vector *velocity = vec_random(2, -20, 20, false);
         ball *b = cls_init_ball(1, 1, position, velocity);
         vec_kill(position);
@@ -190,13 +190,18 @@ void collision_sample() {
         cls_kill_ball(b);
     }
     cls_print(r);
-    cls_start(r, 1000, 1000);
+    cls_start(r, 1000, 100000);
     cls_print(r);
     cls_kill_room(r);
 }
 
 int main() {
-    srand(time(NULL));
+    //srand(time(NULL));
+
+    srand(35);
+    collision_sample();
+    return 0;
+
     matrix_sample();
     list_sample();
     stack_sample();

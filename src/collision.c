@@ -239,7 +239,7 @@ static double kinetic(room *r) {
 void cls_start(room *r, int interval, int round) {
     assert(interval > 0);
     while (round < 0 || round--) {
-        //printf("%f\n", kinetic(r));
+        printf("%f\n", kinetic(r));
         list_iter *it = lst_init_iter(r->ball_list, false);
         list_node *n;
         // calculate new velocity
@@ -263,7 +263,7 @@ void cls_start(room *r, int interval, int round) {
             update_position(b, interval);
             update_block(r, b, n);
         }
-        //printf("%f\n", kinetic(r));
+        printf("%f\n", kinetic(r));
     }
 }
 

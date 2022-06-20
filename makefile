@@ -1,44 +1,49 @@
 CC=gcc
+INCLUDE=include
+SRC=src
+LIB=lib
 
-liblist.a: list.o lnode.o
-	ar rcs liblist.a list.o lnode.o
-libmatrix.a: matrix.o
-	ar rcs libmatrix.a matrix.o
-libqueue.a: queue.o lnode.o
-	ar rcs libqueue.a queue.o lnode.o
-libstack.a: stack.o lnode.o
-	ar rcs libstack.a stack.o lnode.o
-libvector.a: vector.o
-	ar rcs libvector.a vector.o
-libndarray.a: ndarray.o
-	ar rcs libndarray.a ndarray.o
-libfunc.a: func.o
-	ar rcs libfunc.a func.o
-libcollision.a: collision.o list.o lnode.o vector.o ndarray.o
-	ar rcs libcollision.a collision.o list.o lnode.o vector.o ndarray.o
+$(LIB)/liblist.a: $(LIB)/list.o $(LIB)/lnode.o
+	ar rcs $(LIB)/liblist.a $(LIB)/list.o $(LIB)/lnode.o
+$(LIB)/libmatrix.a: $(LIB)/matrix.o
+	ar rcs $(LIB)/libmatrix.a $(LIB)/matrix.o
+$(LIB)/libqueue.a: $(LIB)/queue.o $(LIB)/lnode.o
+	ar rcs $(LIB)/libqueue.a $(LIB)/queue.o $(LIB)/lnode.o
+$(LIB)/libstack.a: $(LIB)/stack.o $(LIB)/lnode.o
+	ar rcs $(LIB)/libstack.a $(LIB)/stack.o $(LIB)/lnode.o
+$(LIB)/libvector.a: $(LIB)/vector.o
+	ar rcs $(LIB)/libvector.a $(LIB)/vector.o
+$(LIB)/libndarray.a: $(LIB)/ndarray.o
+	ar rcs $(LIB)/libndarray.a $(LIB)/ndarray.o
+$(LIB)/libfunc.a: $(LIB)/func.o
+	ar rcs $(LIB)/libfunc.a $(LIB)/func.o
+$(LIB)/libcollision.a: $(LIB)/collision.o $(LIB)/list.o $(LIB)/lnode.o $(LIB)/vector.o $(LIB)/ndarray.o
+	ar rcs $(LIB)/libcollision.a $(LIB)/collision.o $(LIB)/list.o $(LIB)/lnode.o $(LIB)/vector.o $(LIB)/ndarray.o
 
-list.o: list.c list.h
-	$(CC) -c list.c -o list.o
-lnode.o: lnode.c lnode.h
-	$(CC) -c lnode.c -o lnode.o
-matrix.o: matrix.c matrix.h
-	$(CC) -c matrix.c -o matrix.o
-queue.o: queue.c queue.h
-	$(CC) -c queue.c -o queue.o
-stack.o: stack.c stack.h
-	$(CC) -c stack.c -o stack.o
-vector.o: vector.c vector.h
-	$(CC) -c vector.c -o vector.o
-ndarray.o: ndarray.c ndarray.h
-	$(CC) -c ndarray.c -o ndarray.o
-func.o: func.c func.h
-	$(CC) -c func.c -o func.o
-collision.o: collision.c collision.h
-	$(CC) -c collision.c -o collision.o
+$(LIB)/list.o: $(SRC)/list.c $(INCLUDE)/list.h $(LIB)
+	$(CC) -c $(SRC)/list.c -o $(LIB)/list.o -I$(INCLUDE)
+$(LIB)/lnode.o: $(SRC)/lnode.c $(INCLUDE)/lnode.h $(LIB)
+	$(CC) -c $(SRC)/lnode.c -o $(LIB)/lnode.o -I$(INCLUDE)
+$(LIB)/matrix.o: $(SRC)/matrix.c $(INCLUDE)/matrix.h $(LIB)
+	$(CC) -c $(SRC)/matrix.c -o $(LIB)/matrix.o -I$(INCLUDE)
+$(LIB)/queue.o: $(SRC)/queue.c $(INCLUDE)/queue.h $(LIB)
+	$(CC) -c $(SRC)/queue.c -o $(LIB)/queue.o -I$(INCLUDE)
+$(LIB)/stack.o: $(SRC)/stack.c $(INCLUDE)/stack.h $(LIB)
+	$(CC) -c $(SRC)/stack.c -o $(LIB)/stack.o -I$(INCLUDE)
+$(LIB)/vector.o: $(SRC)/vector.c $(INCLUDE)/vector.h $(LIB)
+	$(CC) -c $(SRC)/vector.c -o $(LIB)/vector.o -I$(INCLUDE)
+$(LIB)/ndarray.o: $(SRC)/ndarray.c $(INCLUDE)/ndarray.h $(LIB)
+	$(CC) -c $(SRC)/ndarray.c -o $(LIB)/ndarray.o -I$(INCLUDE)
+$(LIB)/func.o: $(SRC)/func.c $(INCLUDE)/func.h $(LIB)
+	$(CC) -c $(SRC)/func.c -o $(LIB)/func.o -I$(INCLUDE)
+$(LIB)/collision.o: $(SRC)/collision.c $(INCLUDE)/collision.h $(LIB)
+	$(CC) -c $(SRC)/collision.c -o $(LIB)/collision.o -I$(INCLUDE)
 
+$(LIB):
+	mkdir -p $(LIB)
 clean:
-	rm -f *.a *.o sample
+	rm -rf lib sample
 run: sample
 	./sample
-sample: sample.c liblist.a libmatrix.a libqueue.a libstack.a libvector.a libndarray.a libfunc.a libcollision.a
-	$(CC) sample.c -o sample -L. -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -lcollision
+sample: sample.c $(LIB)/liblist.a $(LIB)/libmatrix.a $(LIB)/libqueue.a $(LIB)/libstack.a $(LIB)/libvector.a $(LIB)/libndarray.a $(LIB)/libfunc.a $(LIB)/libcollision.a
+	$(CC) sample.c -o sample -I$(INCLUDE) -L$(LIB) -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -lcollision
