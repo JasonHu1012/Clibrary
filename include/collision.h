@@ -11,22 +11,22 @@ typedef struct ball ball;
 
 room *cls_init_room( // room is a square
     int dim,
-    // the range of the room
+    // the range of the room, in meter
     double *range_min,
     double *range_max,
     double max_ball_radius // should be as small as possible for better performance
 );
 ball *cls_init_ball(
     double radius,
-    double mass,
+    double mass, // kilogram
     // user can kill the vectors afterwards
     vector *position,
-    vector *velocity // measured in [length unit]/s
+    vector *velocity // meters per second
 );
 // user can kill the ball afterwardss
 void cls_add_ball(room *r, ball *b);
 void cls_print(room *r);
-double cls_kinetic(room *r);
+double cls_kinetic(room *r); // Joule
 void cls_start(
     room *r,
     int real_interval, // the real time between two frames,
