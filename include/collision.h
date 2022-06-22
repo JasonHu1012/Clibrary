@@ -4,6 +4,7 @@
 #include "list.h"
 #include "vector.h"
 #include "ndarray.h"
+#include <stdbool.h>
 
 typedef struct room room;
 typedef struct ball ball;
@@ -25,12 +26,23 @@ ball *cls_init_ball(
 // user can kill the ball afterwardss
 void cls_add_ball(room *r, ball *b);
 void cls_print(room *r);
+double cls_kinetic(room *r);
 void cls_start(
     room *r,
-    int interval, // measured in micro second,
-                  // should be small enough to avoid a ball going
-                  // through other balls or out of the room
-    int round // let round < 0 to run infinitely
+    int real_interval, // the real time between two frames,
+                       // measured in millisecond,
+                       // only used when `show` is true
+    int logical_interval, // the logical time between two frames,
+                          // measured in microsecond,
+                          // should be small enough to avoid a ball going
+                          // through other balls or out of the room,
+                          // must be larger than zero
+    int rounds, // let round < 0 to run infinitely
+    bool show, // use SDL to show the process, only 2d,
+               // the program uses Cartesian coordinate system,
+               // and will do the convertion to show the correct
+               // result in SDL coordinate system
+    bool fill // whether to fill the ball when showing the process
 );
 void cls_kill_room(room *r);
 void cls_kill_ball(ball *b);

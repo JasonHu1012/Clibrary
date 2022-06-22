@@ -9,8 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 void matrix_sample() {
     printf("---matrix---\n");
@@ -163,20 +161,6 @@ void func_sample() {
     free(arr);
 }
 
-double square_border(vector *v) {
-    if (fabs(*vec_entry(v, 1)) > 5.0) {
-        return -1;
-    }
-    if (fabs(*vec_entry(v, 2)) > 5.0) {
-        return -1;
-    }
-    return 1;
-}
-
-double ball_obj(vector *v) {
-    return pow(*vec_entry(v, 1), 2) + pow(*vec_entry(v, 2), 2) - 1;
-}
-
 void collision_sample() {
     printf("---collision---\n");
     room *r = cls_init_room(2, (double[]){-5, -5}, (double[]){5, 5}, 1);
@@ -190,18 +174,14 @@ void collision_sample() {
         cls_kill_ball(b);
     }
     cls_print(r);
-    cls_start(r, 1000, 100000);
+    printf("%f\n", cls_kinetic(r));
+    cls_start(r, 10, 5000, 500, true, false);
     cls_print(r);
     cls_kill_room(r);
 }
 
 int main() {
-    //srand(time(NULL));
-
-    srand(35);
-    collision_sample();
-    return 0;
-
+    srand(time(NULL));
     matrix_sample();
     list_sample();
     stack_sample();
