@@ -3,6 +3,9 @@ INCLUDE=include
 SRC=src
 LIB=lib
 
+sample: sample.c $(LIB)/liblist.a $(LIB)/libmatrix.a $(LIB)/libqueue.a $(LIB)/libstack.a $(LIB)/libvector.a $(LIB)/libndarray.a $(LIB)/libfunc.a $(LIB)/libcollision.a
+	$(CC) sample.c -o sample -I$(INCLUDE) -L$(LIB) -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -lcollision $(shell sdl2-config --cflags --libs)
+
 $(LIB)/liblist.a: $(LIB)/list.o $(LIB)/lnode.o
 	ar rcs $(LIB)/liblist.a $(LIB)/list.o $(LIB)/lnode.o
 $(LIB)/libmatrix.a: $(LIB)/matrix.o
@@ -48,11 +51,7 @@ $(LIB)/collision.o: $(SRC)/collision.c $(INCLUDE)/collision.h
 	@mkdir -p $(LIB)
 	$(CC) -c $(SRC)/collision.c -o $(LIB)/collision.o -I$(INCLUDE)
 
-$(LIB):
-	mkdir -p $(LIB)
 clean:
 	rm -rf lib sample
 run: sample
 	./sample
-sample: sample.c $(LIB)/liblist.a $(LIB)/libmatrix.a $(LIB)/libqueue.a $(LIB)/libstack.a $(LIB)/libvector.a $(LIB)/libndarray.a $(LIB)/libfunc.a $(LIB)/libcollision.a
-	$(CC) sample.c -o sample -I$(INCLUDE) -L$(LIB) -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -lcollision $(shell sdl2-config --cflags --libs)
