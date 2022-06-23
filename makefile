@@ -1,10 +1,12 @@
-CC=gcc
-INCLUDE=include
-SRC=src
-LIB=lib
+CC = gcc
+INCLUDE = include
+SRC = src
+LIB = lib
+# set CFLAGS to -g to debug
+CFLAGS =
 
 sample: sample.c $(LIB)/liblist.a $(LIB)/libmatrix.a $(LIB)/libqueue.a $(LIB)/libstack.a $(LIB)/libvector.a $(LIB)/libndarray.a $(LIB)/libfunc.a $(LIB)/libcollision.a
-	$(CC) sample.c -o sample -I$(INCLUDE) -L$(LIB) -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -lcollision $(shell sdl2-config --cflags --libs)
+	$(CC) sample.c -o sample -I$(INCLUDE) -L$(LIB) -llist -lmatrix -lqueue -lstack -lvector -lm -lndarray -lfunc -lcollision $(shell sdl2-config --cflags --libs) $(CFLAGS)
 
 $(LIB)/liblist.a: $(LIB)/list.o $(LIB)/lnode.o
 	ar rcs $(LIB)/liblist.a $(LIB)/list.o $(LIB)/lnode.o
@@ -25,31 +27,31 @@ $(LIB)/libcollision.a: $(LIB)/collision.o $(LIB)/list.o $(LIB)/lnode.o $(LIB)/ve
 
 $(LIB)/list.o: $(SRC)/list.c $(INCLUDE)/list.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/list.c -o $(LIB)/list.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/list.c -o $(LIB)/list.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/lnode.o: $(SRC)/lnode.c $(INCLUDE)/lnode.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/lnode.c -o $(LIB)/lnode.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/lnode.c -o $(LIB)/lnode.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/matrix.o: $(SRC)/matrix.c $(INCLUDE)/matrix.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/matrix.c -o $(LIB)/matrix.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/matrix.c -o $(LIB)/matrix.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/queue.o: $(SRC)/queue.c $(INCLUDE)/queue.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/queue.c -o $(LIB)/queue.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/queue.c -o $(LIB)/queue.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/stack.o: $(SRC)/stack.c $(INCLUDE)/stack.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/stack.c -o $(LIB)/stack.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/stack.c -o $(LIB)/stack.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/vector.o: $(SRC)/vector.c $(INCLUDE)/vector.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/vector.c -o $(LIB)/vector.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/vector.c -o $(LIB)/vector.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/ndarray.o: $(SRC)/ndarray.c $(INCLUDE)/ndarray.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/ndarray.c -o $(LIB)/ndarray.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/ndarray.c -o $(LIB)/ndarray.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/func.o: $(SRC)/func.c $(INCLUDE)/func.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/func.c -o $(LIB)/func.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/func.c -o $(LIB)/func.o -I$(INCLUDE) $(CFLAGS)
 $(LIB)/collision.o: $(SRC)/collision.c $(INCLUDE)/collision.h
 	@mkdir -p $(LIB)
-	$(CC) -c $(SRC)/collision.c -o $(LIB)/collision.o -I$(INCLUDE)
+	$(CC) -c $(SRC)/collision.c -o $(LIB)/collision.o -I$(INCLUDE) $(CFLAGS)
 
 clean:
 	rm -rf lib sample

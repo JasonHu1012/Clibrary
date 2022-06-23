@@ -73,10 +73,8 @@ static void kill(_ndarray *a, int dim) {
             kill(a->content[i], dim - 1);
         }
     }
-    else {
-        free(a->content);
-        free(a);
-    }
+    free(a->content);
+    free(a);
 }
 
 void nda_kill(ndarray *a) {

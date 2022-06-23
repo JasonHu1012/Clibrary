@@ -19,6 +19,8 @@ void matrix_sample() {
     printf("%f\n", *mat_entry(m, 2, 2));
     *mat_entry(m, 2, 2) = 100;
     mat_print(m);
+    mat_kill(a);
+    mat_kill(b);
     mat_kill(m);
 }
 
@@ -143,6 +145,8 @@ void ndarray_sample() {
     i = 0;
     nda_get(a, index, &i);
     printf("%d\n", i); // 100
+    free(size);
+    free(index);
     nda_kill(a);
 }
 

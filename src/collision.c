@@ -407,6 +407,7 @@ static void kill_block(ndarray *block, int *size, int dim) {
     int *index = (int *)malloc(sizeof(int) * dim);
     kill_block_helper(block, size, dim, 0, index);
     free(index);
+    nda_kill(block);
 }
 
 void cls_kill_room(room *r) {
