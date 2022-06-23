@@ -29,20 +29,24 @@ void cls_print(room *r);
 double cls_kinetic(room *r); // Joule
 void cls_start(
     room *r,
-    int real_interval, // the real time between two frames,
-                       // measured in millisecond,
-                       // only used when `show` is true
-    int logical_interval, // the logical time between two frames,
-                          // measured in microsecond,
-                          // should be small enough to avoid a ball going
-                          // through other balls or out of the room,
-                          // must be larger than zero
+    int interval, // the logical time between two frames,
+                  // measured in microsecond,
+                  // should be small enough to avoid a ball going
+                  // through other balls or out of the room,
+                  // must be larger than zero
+    int rounds // let round < 0 to run infinitely
+);
+// use SDL to show the process, only 2d
+void cls_start_show(
+    room *r,
+    int interval, // the logical time between two frames,
+                  // measured in microsecond,
+                  // should be small enough to avoid a ball going
+                  // through other balls or out of the room,
+                  // must be larger than zero
     int rounds, // let round < 0 to run infinitely
-    bool show, // use SDL to show the process, only 2d,
-               // the program uses Cartesian coordinate system,
-               // and will do the convertion to show the correct
-               // result in SDL coordinate system
-    bool fill // whether to fill the ball when showing the process
+    int fps,
+    bool fill // whether to fill the ball
 );
 void cls_kill_room(room *r);
 void cls_kill_ball(ball *b);

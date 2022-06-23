@@ -175,7 +175,8 @@ void collision_sample() {
     }
     cls_print(r);
     printf("%f\n", cls_kinetic(r));
-    cls_start(r, 10, 5000, 500, true, false);
+    cls_start(r, 1000, 100);
+    cls_start_show(r, 5000, 500, 60, false);
     cls_print(r);
     cls_kill_room(r);
 }

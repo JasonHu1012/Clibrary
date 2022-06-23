@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 
 #define WINDOW_TO_DISPLAY_RATIO 0.6
+#define MAX_FPS 120
 
 struct room {
     int dim;
@@ -344,45 +345,48 @@ static Uint32 callback(Uint32 interval, void *arg) {
     return interval;
 }
 
-void cls_start(room *r, int real_interval, int logical_interval, int rounds, bool show, bool fill) {
-    assert(logical_interval > 0);
-    if (show) {
-        assert(r->dim == 2);
-        assert(real_interval > 0);
-        SDL_Window *window = NULL;
-        SDL_Renderer *renderer = NULL;
-        SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO);
-        SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_SHOWN, &window, &renderer);
-        SDL_DisplayMode dm;
-        SDL_GetDesktopDisplayMode(0, &dm);
-        double scale_cand1 = (double)dm.w * WINDOW_TO_DISPLAY_RATIO / (r->range_max[0] - r->range_min[0]);
-        double scale_cand2 = (double)dm.h * WINDOW_TO_DISPLAY_RATIO / (r->range_max[1] - r->range_min[1]);
-        double scale = fmin(scale_cand1, scale_cand2);
-        int width = (int)round((r->range_max[0] - r->range_min[0]) * scale);
-        int height = (int)round((r->range_max[1] - r->range_min[1]) * scale);
-        SDL_SetWindowSize(window, width, height);
-        SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-        SDL_TimerID timer_id = SDL_AddTimer(real_interval, callback, &rounds);
-        SDL_Event event;
-        while (true) {
-            SDL_WaitEvent(&event);
-            if (event.type == SDL_USEREVENT) {
-                run(r, logical_interval, show, renderer, scale, fill);
-            }
-            else if (event.type == SDL_QUIT) {
-                break;
-            }
-        }
-        SDL_RemoveTimer(timer_id);
-        SDL_DestroyWindow(window);
-        SDL_DestroyRenderer(renderer);
-        SDL_Quit();
+void cls_start(room *r, int interval, int rounds) {
+    assert(interval > 0);
+    while (rounds < 0 || rounds--) {
+        run(r, interval, false, NULL, 0, false);
     }
-    else {
-        while (rounds < 0 || rounds--) {
-            run(r, logical_interval, false, NULL, 0, false);
+}
+
+void cls_start_show(room *r, int interval, int rounds, int fps, bool fill) {
+    assert(interval > 0);
+    assert(r->dim == 2);
+    assert(fps > 0);
+    if (fps > MAX_FPS) {
+        fprintf(stderr, "[warning] cls_start_show: high fps may crash your computer\n");
+    }
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO);
+    SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_SHOWN, &window, &renderer);
+    SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode(0, &dm);
+    double scale_cand1 = (double)dm.w * WINDOW_TO_DISPLAY_RATIO / (r->range_max[0] - r->range_min[0]);
+    double scale_cand2 = (double)dm.h * WINDOW_TO_DISPLAY_RATIO / (r->range_max[1] - r->range_min[1]);
+    double scale = fmin(scale_cand1, scale_cand2);
+    int width = (int)round((r->range_max[0] - r->range_min[0]) * scale);
+    int height = (int)round((r->range_max[1] - r->range_min[1]) * scale);
+    SDL_SetWindowSize(window, width, height);
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    SDL_TimerID timer_id = SDL_AddTimer(1000 / fps, callback, &rounds);
+    SDL_Event event;
+    while (true) {
+        SDL_WaitEvent(&event);
+        if (event.type == SDL_USEREVENT) {
+            run(r, interval, true, renderer, scale, fill);
+        }
+        else if (event.type == SDL_QUIT) {
+            break;
         }
     }
+    SDL_RemoveTimer(timer_id);
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_Quit();
 }
 
 static void kill_block_helper(ndarray *block, int *size, int dim, int cur, int *index) {
