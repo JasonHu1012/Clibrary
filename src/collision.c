@@ -26,7 +26,6 @@ struct ball {
     vector *position;
     vector *velocity;
     int *block_index;
-    vector *new_velocity; // update velocity after calculating all balls'
     int id;
 };
 
@@ -157,21 +156,14 @@ static void check_border(room *r, ball *b) {
                 vector *proj = vec_project(b->velocity, normal);
                 vector *delta = vec_mul(proj, -2);
                 vec_kill(proj);
-                vector *old = b->new_velocity;
-                b->new_velocity = vec_add(old, delta);
+                vector *old = b->velocity;
+                b->velocity = vec_add(old, delta);
                 vec_kill(old);
                 vec_kill(delta);
             }
         }
         vec_kill(normal);
     }
-}
-
-static vector *next_position(ball *b, int interval) {
-    vector *delta = vec_mul(b->velocity, (double)interval / 1000000);
-    vector *output = vec_add(b->position, delta);
-    vec_kill(delta);
-    return output;
 }
 
 static void check_neighbor_helper(room *r, ball *b, int interval, int cur, int *index) {
@@ -188,13 +180,20 @@ static void check_neighbor_helper(room *r, ball *b, int interval, int cur, int *
             if (vec_len(d_vec) < b->radius + neighbor->radius) {
                 vector *relative_velocity = vec_minus(b->velocity, neighbor->velocity);
                 vector *normal = vec_unit(d_vec);
-                if (vec_dot(relative_velocity, normal) < 0) { // the ball is moving toward the neighbor
-                    vector *temp = vec_minus(neighbor->velocity, b->velocity);
-                    double n = 2 * b->mass * neighbor->mass / (b->mass + neighbor->mass) * vec_dot(temp, normal);
-                    vec_kill(temp);
+                if (vec_dot(relative_velocity, normal) < 0) { // the two balls are approaching
+                    vector *relative_velocity = vec_minus(neighbor->velocity, b->velocity);
+                    double n = 2 * b->mass * neighbor->mass / (b->mass + neighbor->mass) * vec_dot(relative_velocity, normal);
+                    vec_kill(relative_velocity);
+                    // update b's velocity
                     vector *delta = vec_mul(normal, n / b->mass);
-                    vector *old = b->new_velocity;
-                    b->new_velocity = vec_add(old, delta);
+                    vector *old = b->velocity;
+                    b->velocity = vec_add(old, delta);
+                    vec_kill(old);
+                    vec_kill(delta);
+                    // update neighbor's velocity
+                    delta = vec_mul(normal, n / neighbor->mass);
+                    old = neighbor->velocity;
+                    neighbor->velocity = vec_minus(old, delta);
                     vec_kill(old);
                     vec_kill(delta);
                 }
@@ -223,23 +222,19 @@ static void check_neighbor(room *r, ball *b, int interval) {
     free(index);
 }
 
-static void calculate_velocity(room *r, ball *b, int interval) {
-    b->new_velocity = vec_copy(b->velocity);
+static void update_velocity(room *r, ball *b, int interval) {
     // border
     check_border(r, b);
     // other balls
     check_neighbor(r, b, interval);
 }
 
-static void update_velocity(ball *b) {
-    vec_kill(b->velocity);
-    b->velocity = b->new_velocity;
-}
-
 static void update_position(ball *b, int interval) {
-    vector *old_position = b->position;
-    b->position = next_position(b, interval);
-    vec_kill(old_position);
+    vector *old = b->position;
+    vector *delta = vec_mul(b->velocity, (double)interval / 1000000);
+    b->position = vec_add(old, delta);
+    vec_kill(old);
+    vec_kill(delta);
 }
 
 static void update_block(room *r, ball *b, list_node *n) {
@@ -277,20 +272,13 @@ static void draw_circle(SDL_Renderer *renderer, int cx, int cy, double r) {
 static void run(room *r, int interval, bool show, SDL_Renderer *renderer, double scale, bool fill) {
     list_iter *it = lst_init_iter(r->ball_list, false);
     list_node *n;
-    // calculate new velocity
+    // velocity
     while (lst_iter_next(it, &n)) {
         ball *b;
         lst_get_node(n, &b);
-        calculate_velocity(r, b, interval);
+        update_velocity(r, b, interval);
     }
-    // update velocity
-    lst_iter_reset(it);
-    while (lst_iter_next(it, &n)) {
-        ball *b;
-        lst_get_node(n, &b);
-        update_velocity(b);
-    }
-    // update position and the block belonging to
+    // position and the block belonging to
     lst_iter_reset(it);
     while (lst_iter_next(it, &n)) {
         ball *b;

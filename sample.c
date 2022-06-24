@@ -170,8 +170,8 @@ void collision_sample() {
     room *r = cls_init_room(2, (double[]){-5, -5}, (double[]){5, 5}, 1);
     for (int i = 0; i < 4; i++) {
         vector *position = vec_iarr((int[]){i % 2 * 4 - 2, i / 2 * -4 + 2}, 2);
-        vector *velocity = vec_random(2, -20, 20, false);
-        ball *b = cls_init_ball(1, 1, position, velocity);
+        vector *velocity = vec_random(2, -10, 10, false);
+        ball *b = cls_init_ball(1, rand() % 5 + 1, position, velocity);
         vec_kill(position);
         vec_kill(velocity);
         cls_add_ball(r, b);
@@ -179,8 +179,9 @@ void collision_sample() {
     }
     cls_print(r);
     printf("%f\n", cls_kinetic(r));
-    cls_start(r, 1000, 100);
-    cls_start_show(r, 5000, 500, 60, false);
+    cls_start(r, 5000, 10000);
+    cls_start_show(r, 20000, 300, 50, false);
+    printf("%f\n", cls_kinetic(r));
     cls_kill_room(r);
 }
 
