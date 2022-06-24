@@ -143,7 +143,7 @@ double cls_kinetic(room *r) {
     return output;
 }
 
-static void check_border(room *r, ball *b, vector **new_velocity) {
+static void check_border(room *r, ball *b) {
     for (int i = 0; i < r->dim; i++) {
         vector *normal = vec_zero(r->dim);
         if (*vec_entry(b->position, i + 1) - b->radius < r->range_min[i]) {
@@ -157,8 +157,8 @@ static void check_border(room *r, ball *b, vector **new_velocity) {
                 vector *proj = vec_project(b->velocity, normal);
                 vector *delta = vec_mul(proj, -2);
                 vec_kill(proj);
-                vector *old = *new_velocity;
-                *new_velocity = vec_add(old, delta);
+                vector *old = b->new_velocity;
+                b->new_velocity = vec_add(old, delta);
                 vec_kill(old);
                 vec_kill(delta);
             }
@@ -174,7 +174,7 @@ static vector *next_position(ball *b, int interval) {
     return output;
 }
 
-static void check_neighbor_helper(room *r, ball *b, vector **new_velocity, int interval, int cur, int *index) {
+static void check_neighbor_helper(room *r, ball *b, int interval, int cur, int *index) {
     if (cur == r->dim) {
         list *l;
         nda_get(r->block, index, &l);
@@ -186,26 +186,20 @@ static void check_neighbor_helper(room *r, ball *b, vector **new_velocity, int i
             }
             vector *d_vec = vec_minus(b->position, neighbor->position);
             if (vec_len(d_vec) < b->radius + neighbor->radius) {
-                vector *b_new_position = next_position(b, interval);
-                vector *n_new_position = next_position(neighbor, interval);
-                vector *new_d_vec = vec_minus(b_new_position, n_new_position);
-                vec_kill(b_new_position);
-                vec_kill(n_new_position);
-                double old_d = vec_len(d_vec);
-                double new_d = vec_len(new_d_vec);
-                vec_kill(new_d_vec);
-                if (new_d < old_d) { // the two balls are colliding
-                    vector *normal = vec_unit(d_vec);
+                vector *relative_velocity = vec_minus(b->velocity, neighbor->velocity);
+                vector *normal = vec_unit(d_vec);
+                if (vec_dot(relative_velocity, normal) < 0) { // the ball is moving toward the neighbor
                     vector *temp = vec_minus(neighbor->velocity, b->velocity);
                     double n = 2 * b->mass * neighbor->mass / (b->mass + neighbor->mass) * vec_dot(temp, normal);
                     vec_kill(temp);
                     vector *delta = vec_mul(normal, n / b->mass);
-                    vec_kill(normal);
-                    vector *old = *new_velocity;
-                    *new_velocity = vec_add(old, delta);
+                    vector *old = b->new_velocity;
+                    b->new_velocity = vec_add(old, delta);
                     vec_kill(old);
                     vec_kill(delta);
                 }
+                vec_kill(relative_velocity);
+                vec_kill(normal);
             }
             vec_kill(d_vec);
         }
@@ -218,23 +212,23 @@ static void check_neighbor_helper(room *r, ball *b, vector **new_velocity, int i
                 continue;
             }
             index[cur] = cand;
-            check_neighbor_helper(r, b, new_velocity, interval, cur + 1, index);
+            check_neighbor_helper(r, b, interval, cur + 1, index);
         }
     }
 }
 
-static void check_neighbor(room *r, ball *b, vector **new_velocity, int interval) {
+static void check_neighbor(room *r, ball *b, int interval) {
     int *index = (int *)malloc(sizeof(int) * r->dim);
-    check_neighbor_helper(r, b, new_velocity, interval, 0, index);
+    check_neighbor_helper(r, b, interval, 0, index);
     free(index);
 }
 
 static void calculate_velocity(room *r, ball *b, int interval) {
     b->new_velocity = vec_copy(b->velocity);
     // border
-    check_border(r, b, &b->new_velocity);
+    check_border(r, b);
     // other balls
-    check_neighbor(r, b, &b->new_velocity, interval);
+    check_neighbor(r, b, interval);
 }
 
 static void update_velocity(ball *b) {
