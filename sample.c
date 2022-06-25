@@ -163,6 +163,8 @@ void func_sample() {
     n = arr[2][3][4];
     printf("n = arr[2][3][4];\nn: %d\n", n);
     free(arr);
+    printf("%d\n", randi(5, 10));
+    printf("%f\n", randf(3.5, 5.2));
 }
 
 void collision_sample() {

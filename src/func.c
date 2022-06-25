@@ -31,3 +31,11 @@ void *salloc(int width, int *len, int dim) {
     }
     return output;
 }
+
+int randi(int min, int max) {
+    return rand() % (max - min + 1) + min;
+}
+
+double randf(double min, double max) {
+    return (double)rand() / RAND_MAX * (max - min) + min;
+}
