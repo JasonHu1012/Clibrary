@@ -1,8 +1,4 @@
 .*
 *.o
 *.a
-heap.h
-heap_del_need_fix.c
-rbtree.*
-sort.*
 sample

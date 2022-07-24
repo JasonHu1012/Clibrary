@@ -165,6 +165,9 @@ void func_sample() {
     free(arr);
     printf("%d\n", randi(5, 10));
     printf("%f\n", randf(3.5, 5.2));
+    if (str_to_num("123", &n)) {
+        printf("%d\n", n);
+    }
 }
 
 void collision_sample() {
