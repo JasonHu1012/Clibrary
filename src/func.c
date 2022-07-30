@@ -65,3 +65,20 @@ bool str_to_num(char *str, int *n) {
     return true;
 }
 
+int *distinct_rand(int start, int end, int count) {
+    int total = end - start + 1;
+    assert(total >= count);
+    int *cand = (int *)malloc(sizeof(int) * total);
+    for (int i = 0; i < total; i++) {
+        cand[i] = start + i;
+    }
+    for (int i = 0; i < count; i++) {
+        int r = rand() % (total - i) + i;
+        int temp = cand[i];
+        cand[i] = cand[r];
+        cand[r] = temp;
+    }
+    int *output = (int *)malloc(sizeof(int) * count);
+    memcpy(output, cand, sizeof(int) * count);
+    return output;
+}

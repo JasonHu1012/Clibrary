@@ -168,6 +168,11 @@ void func_sample() {
     if (str_to_num("123", &n)) {
         printf("%d\n", n);
     }
+    int *dr = distinct_rand(1, 100, 10);
+    for (int i = 0; i < 10; i++) {
+        printf("%d ", dr[i]);
+    }
+    printf("\n");
 }
 
 void collision_sample() {
