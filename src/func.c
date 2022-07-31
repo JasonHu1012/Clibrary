@@ -80,5 +80,6 @@ int *distinct_rand(int start, int end, int count) {
     }
     int *output = (int *)malloc(sizeof(int) * count);
     memcpy(output, cand, sizeof(int) * count);
+    free(cand);
     return output;
 }
