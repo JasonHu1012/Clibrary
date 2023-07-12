@@ -5,7 +5,7 @@
 
 typedef struct list list;
 
-// initialize a list containing elements of the type occupying `width` byte(s)
+// initialize a list of type occupying `width` byte(s)
 // initial size is 0
 list *lst_init(int width);
 
