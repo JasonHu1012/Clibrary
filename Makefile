@@ -11,7 +11,7 @@ CFLAGS = -Wall -I$(INCLUDE)
 AR = ar
 ARFLAGS = rcs
 
-LIBRARYS = list
+LIBRARYS = list stack
 
 all: $(addsuffix .a, $(addprefix $(LIB)lib, $(LIBRARYS))) $(addsuffix _test, $(addprefix $(BIN), $(LIBRARYS)))
 
@@ -19,6 +19,9 @@ $(BIN)%_test: $(TEST)%_test.c $(LIB)lib%.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
 
 $(LIB)liblist.a: $(OBJ)list.o | $(LIB)
+	$(AR) $(ARFLAGS) $@ $^
+
+$(LIB)libstack.a: $(OBJ)stack.o $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(OBJ)%.o: $(SRC)%.c $(INCLUDE)%.h | $(OBJ)
