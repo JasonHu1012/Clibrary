@@ -8,6 +8,7 @@ void test1() {
     printf("stk_init, stk_kill... ");
 
     stack *stk = stk_init(sizeof(int));
+    assert(stk_size(stk) == 0);
     stk_kill(stk);
 
     printf("pass\n");
