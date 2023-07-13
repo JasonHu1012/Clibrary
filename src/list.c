@@ -11,7 +11,7 @@ struct list {
     int real_size;
 };
 
-int INITIAL_REAL_SIZE = 16;
+const int INITIAL_REAL_SIZE = 16;
 
 list *lst_init(int width) {
     assert(width > 0);
