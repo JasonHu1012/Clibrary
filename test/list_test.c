@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-void test1() {
+void func_test1() {
     printf("lst_init, lst_kill... ");
 
     list *lst = lst_init(sizeof(int));
@@ -14,7 +14,7 @@ void test1() {
     printf("pass\n");
 }
 
-void test2() {
+void func_test2() {
     int size = 1000;
 
     printf("lst_set_size, lst_size... ");
@@ -29,7 +29,7 @@ void test2() {
     printf("pass\n");
 }
 
-void test3() {
+void func_test3() {
     printf("lst_is_empty... ");
 
     list *lst = lst_init(sizeof(int));
@@ -42,7 +42,7 @@ void test3() {
     printf("pass\n");
 }
 
-void test4() {
+void func_test4() {
     int size = 1000;
 
     printf("lst_get, lst_set... ");
@@ -66,7 +66,7 @@ void test4() {
     printf("pass\n");
 }
 
-void test5() {
+void func_test5() {
     int size = 1000;
 
     printf("lst_append, lst_pop... ");
@@ -91,7 +91,7 @@ void test5() {
     printf("pass\n");
 }
 
-void test6() {
+void func_test6() {
     printf("lst_pop `dst` can be NULL... ");
 
     list *lst = lst_init(sizeof(int));
@@ -105,7 +105,7 @@ void test6() {
     printf("pass\n");
 }
 
-void test7() {
+void func_test7() {
     int size = 100;
     int T = 1000;
     int index = 50;
@@ -131,7 +131,7 @@ void test7() {
     printf("pass\n");
 }
 
-void test8() {
+void func_test8() {
     int size = 100;
     int index = 50;
 
@@ -147,7 +147,7 @@ void test8() {
     printf("pass\n");
 }
 
-void test9() {
+void time_test1() {
     int size = 10000;
     int T = 10000000;
 
@@ -173,19 +173,20 @@ void test9() {
 }
 
 int main() {
-    printf("=== start tests of list ===\n");
+    printf("=== start list tests ===\n");
 
-    test1(); 
-    test2();
-    test3();
-    test4();
-    test5();
-    test6();
-    test7();
-    test8();
-    test9();
+    func_test1(); 
+    func_test2();
+    func_test3();
+    func_test4();
+    func_test5();
+    func_test6();
+    func_test7();
+    func_test8();
 
-    printf("=== pass all tests of list ===\n");
+    time_test1();
+
+    printf("=== pass list tests ===\n");
 
     return 0;
 }

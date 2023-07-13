@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void test1() {
+void func_test1() {
     printf("stk_init, stk_kill... ");
 
     stack *stk = stk_init(sizeof(int));
@@ -14,7 +14,7 @@ void test1() {
     printf("pass\n");
 }
 
-void test2() {
+void func_test2() {
     int size = 100;
     printf("stk_size, stk_is_empty... ");
 
@@ -38,7 +38,7 @@ void test2() {
     printf("pass\n");
 }
 
-void test3() {
+void func_test3() {
     int T = 1000;
     printf("stk_push, stk_pop... ");
 
@@ -62,7 +62,7 @@ void test3() {
     printf("pass\n");
 }
 
-void test4() {
+void func_test4() {
     int value = 100;
     printf("stk_top... ");
 
@@ -80,7 +80,7 @@ void test4() {
     printf("pass\n");
 }
 
-void test5() {
+void func_test5() {
     printf("stk_pop `dst` can be NULL... ");
 
     stack *stk = stk_init(sizeof(int));
@@ -95,7 +95,7 @@ void test5() {
     printf("pass\n");
 }
 
-void test6() {
+void time_test1() {
     int T = 10000000;
 
     printf("%d stk_push and stk_pop... ", T);
@@ -119,12 +119,17 @@ void test6() {
 }
 
 int main() {
-    test1();
-    test2();
-    test3();
-    test4();
-    test5();
-    test6();
+    printf("=== start stack tests ===\n");
+
+    func_test1();
+    func_test2();
+    func_test3();
+    func_test4();
+    func_test5();
+
+    time_test1();
+
+    printf("=== pass stack tests ===\n");
 
     return 0;
 }
