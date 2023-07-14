@@ -272,6 +272,29 @@ void time_test3() {
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
 
+void time_test4() {
+    int T = 10000000;
+
+    printf("%d deq_push_head and deq_pop_tail... ", T);
+
+    deque *deq = deq_init(sizeof(int));
+    int n;
+    clock_t start = clock();
+
+    for (int i = 0; i < T; i++) {
+        n = rand();
+        deq_push_head(deq, &n);
+    }
+    for (int i = 0; i < T; i++) {
+        deq_pop_tail(deq, &n);
+    }
+
+    clock_t end = clock();
+    deq_kill(deq);
+
+    printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+}
+
 int main() {
     printf("=== start deque tests ===\n");
 
@@ -289,6 +312,7 @@ int main() {
     time_test1();
     time_test2();
     time_test3();
+    time_test4();
 
     printf("=== pass deque tests ===\n");
 

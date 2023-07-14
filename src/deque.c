@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SINGLE_NODE_SIZE 1024
+
 typedef struct node {
     void *data;
     struct node *next;
@@ -19,8 +21,6 @@ struct deque {
     int width;
     int size;
 };
-
-const int SINGLE_NODE_SIZE = 1024;
 
 static node *init_node(int width) {
     node *ret = (node *)malloc(sizeof(node));
@@ -93,6 +93,7 @@ void deq_pop_head(deque *deq, void *dst) {
     if (++deq->start == SINGLE_NODE_SIZE) {
         node *old_head = deq->head;
         deq->head = deq->head->next;
+        deq->head->prev = NULL;
         deq->start = 0;
 
         kill_node(old_head);
@@ -124,6 +125,7 @@ void deq_pop_tail(deque *deq, void *dst) {
     if (deq->end-- == 0) {
         node *old_tail = deq->tail;
         deq->tail = deq->tail->prev;
+        deq->tail->next = NULL;
         deq->end = SINGLE_NODE_SIZE - 1;
 
         kill_node(old_tail);

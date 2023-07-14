@@ -3,6 +3,8 @@
 #include <string.h>
 #include <assert.h>
 
+#define INITIAL_REAL_SIZE 16
+
 struct list {
     void *data;
     int width;
@@ -10,8 +12,6 @@ struct list {
     // always larger than `size`
     int real_size;
 };
-
-const int INITIAL_REAL_SIZE = 16;
 
 list *lst_init(int width) {
     assert(width > 0);
