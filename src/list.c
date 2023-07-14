@@ -42,6 +42,10 @@ static void increase_real_size(list *lst) {
 }
 
 static void decrease_real_size(list *lst) {
+    if (lst->size < INITIAL_REAL_SIZE) {
+        return;
+    }
+
     if (lst->size >= lst->real_size >> 1) {
         return;
     }
