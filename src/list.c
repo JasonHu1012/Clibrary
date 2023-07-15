@@ -136,3 +136,20 @@ void lst_remove(list *lst, int i, void *dst) {
             lst->width * (lst->size - i - 1));
     lst->size--;
 }
+
+bool lst_contain(list *lst, void *target) {
+    for (int i = 0; i < lst->size; i++) {
+        if (memcmp((char *)lst->data + lst->width * i, target, lst->width) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int lst_count(list *lst, void *target) {
+    int count = 0;
+    for (int i = 0; i < lst->size; i++) {
+        count += memcmp((char *)lst->data + lst->width * i, target, lst->width) == 0 ? 1 : 0;
+    }
+    return count;
+}

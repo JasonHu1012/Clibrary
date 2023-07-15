@@ -41,4 +41,10 @@ void lst_insert(list *lst, int i, void *src);
 // `dst` can be NULL
 void lst_remove(list *lst, int i, void *dst);
 
+// return whether `lst` contains `target`
+bool lst_contain(list *lst, void *target);
+
+// return the number of `target` in `lst`
+int lst_count(list *lst, void *target);
+
 #endif

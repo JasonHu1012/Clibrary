@@ -147,6 +147,78 @@ void func_test8() {
     printf("pass\n");
 }
 
+void func_test9() {
+    int size = 100;
+
+    printf("lst_contain... ");
+
+    list *lst = lst_init(sizeof(int));
+    for (int i = 0; i < size; i++) {
+        lst_append(lst, &i);
+    }
+
+    for (int i = 0; i < size; i++) {
+        int n = i;
+        assert(lst_contain(lst, &n));
+        assert(n == i);
+        n = i - size;
+        assert(!lst_contain(lst, &n));
+        assert(n == i - size);
+    }
+    for (int i = size - 1; i > -1; i--) {
+        int n;
+        lst_pop(lst, &n);
+        assert(n == i);
+    }
+    assert(lst_size(lst) == 0);
+
+    lst_kill(lst);
+
+    printf("pass\n");
+}
+
+void func_test10() {
+    int size = 100;
+    int target1 = 10;
+    int target2 = 20;
+
+    printf("lst_count... ");
+
+    list *lst = lst_init(sizeof(int));
+    int n = target1;
+    for (int i = 0; i < size / 4; i++) {
+        lst_append(lst, &n);
+    }
+    n = target2;
+    for (int i = size / 4; i < size / 2; i++) {
+        lst_append(lst, &n);
+    }
+    n = target1;
+    for (int i = size / 2; i < size; i++) {
+        lst_append(lst, &n);
+    }
+
+    assert(lst_count(lst, &target1) == size / 4 + size - size / 2);
+    assert(lst_count(lst, &target2) == size / 2 - size / 4);
+    for (int i = size / 2; i < size; i++) {
+        lst_pop(lst, &n);
+        assert(n == target1);
+    }
+    for (int i = size / 4; i < size / 2; i++) {
+        lst_pop(lst, &n);
+        assert(n == target2);
+    }
+    for (int i = 0; i < size / 4; i++) {
+        lst_pop(lst, &n);
+        assert(n == target1);
+    }
+    assert(lst_size(lst) == 0);
+
+    lst_kill(lst);
+
+    printf("pass\n");
+}
+
 void time_test1() {
     int size = 10000;
     int T = 10000000;
@@ -183,6 +255,8 @@ int main() {
     func_test6();
     func_test7();
     func_test8();
+    func_test9();
+    func_test10();
 
     time_test1();
 
