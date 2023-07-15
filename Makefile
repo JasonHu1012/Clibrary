@@ -11,7 +11,7 @@ CFLAGS = -Wall -I$(INCLUDE)
 AR = ar
 ARFLAGS = rcs
 
-LIBRARYS = list stack deque
+LIBRARYS = list stack deque ndarray
 
 all: $(addsuffix .a, $(addprefix $(LIB)lib, $(LIBRARYS))) $(addsuffix _test, $(addprefix $(BIN), $(LIBRARYS)))
 
@@ -25,6 +25,9 @@ $(LIB)libstack.a: $(OBJ)stack.o $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIB)libdeque.a: $(OBJ)deque.o | $(LIB)
+	$(AR) $(ARFLAGS) $@ $^
+
+$(LIB)libndarray.a: $(OBJ)ndarray.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(OBJ)%.o: $(SRC)%.c $(INCLUDE)%.h | $(OBJ)
