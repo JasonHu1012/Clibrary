@@ -21,11 +21,11 @@ int lst_size(list *lst);
 // return whether `lst` is empty
 bool lst_is_empty(list *lst);
 
-// copy the `i`-th element of `lst` to `dst`
-void lst_get(list *lst, int i, void *dst);
+// copy the `index`-th element of `lst` to `dst`
+void lst_get(list *lst, int index, void *dst);
 
-// copy `src` to the `i`-th element of `lst`
-void lst_set(list *lst, int i, void *src);
+// copy `src` to the `index`-th element of `lst`
+void lst_set(list *lst, int index, void *src);
 
 // append `src` at the end of `lst`
 void lst_append(list *lst, void *src);
@@ -34,12 +34,12 @@ void lst_append(list *lst, void *src);
 // `dst` can be NULL
 void lst_pop(list *lst, void *dst);
 
-// insert (copy) `src` into the `i`-th element of `lst`
-void lst_insert(list *lst, int i, void *src);
+// insert (copy) `src` into the `index`-th element of `lst`
+void lst_insert(list *lst, int index, void *src);
 
-// remove the `i`-th element of `lst` and copy it to `dst`
+// remove the `index`-th element of `lst` and copy it to `dst`
 // `dst` can be NULL
-void lst_remove(list *lst, int i, void *dst);
+void lst_remove(list *lst, int index, void *dst);
 
 // return whether `lst` contains `target`
 bool lst_contain(list *lst, void *target);

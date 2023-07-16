@@ -78,16 +78,16 @@ bool lst_is_empty(list *lst) {
     return lst->size == 0;
 }
 
-void lst_get(list *lst, int i, void *dst) {
-    assert(i >= 0 && i < lst->size);
+void lst_get(list *lst, int index, void *dst) {
+    assert(index >= 0 && index < lst->size);
 
-    memcpy(dst, (char *)lst->data + lst->width * i, lst->width);
+    memcpy(dst, (char *)lst->data + lst->width * index, lst->width);
 }
 
-void lst_set(list *lst, int i, void *src) {
-    assert(i >= 0 && i < lst->size);
+void lst_set(list *lst, int index, void *src) {
+    assert(index >= 0 && index < lst->size);
 
-    memcpy((char *)lst->data + lst->width * i, src, lst->width);
+    memcpy((char *)lst->data + lst->width * index, src, lst->width);
 }
 
 void lst_append(list *lst, void *src) {
@@ -107,33 +107,33 @@ void lst_pop(list *lst, void *dst) {
     decrease_real_size(lst);
 }
 
-void lst_insert(list *lst, int i, void *src) {
-    assert(i >= 0 && i <= lst->size);
+void lst_insert(list *lst, int index, void *src) {
+    assert(index >= 0 && index <= lst->size);
 
-    if (i == lst->size) {
+    if (index == lst->size) {
         lst_append(lst, src);
         return;
     }
 
-    memmove((char *)lst->data + lst->width * (i + 1),
-            (char *)lst->data + lst->width * i,
-            lst->width * (lst->size - i));
-    memcpy((char *)lst->data + lst->width * i, src, lst->width);
+    memmove((char *)lst->data + lst->width * (index + 1),
+            (char *)lst->data + lst->width * index,
+            lst->width * (lst->size - index));
+    memcpy((char *)lst->data + lst->width * index, src, lst->width);
     lst->size++;
 
     increase_real_size(lst);
 }
 
-void lst_remove(list *lst, int i, void *dst) {
-    assert(i >= 0 && i < lst->size);
+void lst_remove(list *lst, int index, void *dst) {
+    assert(index >= 0 && index < lst->size);
 
     if (dst) {
-        memcpy(dst, (char *)lst->data + lst->width * i, lst->width);
+        memcpy(dst, (char *)lst->data + lst->width * index, lst->width);
     }
 
-    memmove((char *)lst->data + lst->width * i,
-            (char *)lst->data + lst->width * (i + 1),
-            lst->width * (lst->size - i - 1));
+    memmove((char *)lst->data + lst->width * index,
+            (char *)lst->data + lst->width * (index + 1),
+            lst->width * (lst->size - index - 1));
     lst->size--;
 }
 
