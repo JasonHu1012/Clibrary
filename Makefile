@@ -11,12 +11,24 @@ CFLAGS = -Wall -I$(INCLUDE)
 AR = ar
 ARFLAGS = rcs
 
-LIBRARYS = list stack deque ndarray
+LIBRARYS = list stack deque ndarray vector
 
 all: $(addsuffix .a, $(addprefix $(LIB)lib, $(LIBRARYS))) $(addsuffix _test, $(addprefix $(BIN), $(LIBRARYS)))
 
-$(BIN)%_test: $(TEST)%_test.c $(LIB)lib%.a | $(BIN)
+$(BIN)list_test: $(TEST)list_test.c $(LIB)liblist.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
+
+$(BIN)stack_test: $(TEST)stack_test.c $(LIB)libstack.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^
+
+$(BIN)deque_test: $(TEST)deque_test.c $(LIB)libdeque.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^
+
+$(BIN)ndarray_test: $(TEST)ndarray_test.c $(LIB)libndarray.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^
+
+$(BIN)vector_test: $(TEST)vector_test.c $(LIB)libvector.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^ -lm
 
 $(LIB)liblist.a: $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
@@ -28,6 +40,9 @@ $(LIB)libdeque.a: $(OBJ)deque.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIB)libndarray.a: $(OBJ)ndarray.o | $(LIB)
+	$(AR) $(ARFLAGS) $@ $^
+
+$(LIB)libvector.a: $(OBJ)vector.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(OBJ)%.o: $(SRC)%.c $(INCLUDE)%.h | $(OBJ)
