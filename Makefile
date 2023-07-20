@@ -13,7 +13,14 @@ ARFLAGS = rcs
 
 LIBRARYS = list stack deque ndarray vector
 
+.PHONY: all test %.test clean
+
 all: $(addsuffix .a, $(addprefix $(LIB)lib, $(LIBRARYS))) $(addsuffix _test, $(addprefix $(BIN), $(LIBRARYS)))
+
+test: $(addsuffix .test,  $(LIBRARYS))
+
+%.test: $(BIN)%_test
+	$<
 
 $(BIN)list_test: $(TEST)list_test.c $(LIB)liblist.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
@@ -47,8 +54,6 @@ $(LIB)libvector.a: $(OBJ)vector.o | $(LIB)
 
 $(OBJ)%.o: $(SRC)%.c $(INCLUDE)%.h | $(OBJ)
 	$(CC) -o $@ -c $(CFLAGS) $<
-
-.PHONY:
 
 clean:
 	rm -rf $(OBJ) $(LIB) $(BIN)
