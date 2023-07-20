@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <stdbool.h>
 #include <math.h>
 
@@ -215,6 +216,54 @@ void func_test11() {
     printf("pass\n");
 }
 
+void time_test1() {
+    int T = 1000000;
+    int dim = 100;
+    int min = -1e8;
+    int max = 1e8;
+
+    printf("%d vec_add with dimension %d... ", T, dim);
+
+    vector *vec1 = vec_rand(dim, min, max);
+    vector *vec2 = vec_rand(dim, min, max);
+    vector *dst = vec_zero(dim);
+    clock_t start = clock();
+
+    for (int i = 0; i < T; i++) {
+        vec_add(vec1, vec2, dst);
+    }
+
+    clock_t end = clock();
+    vec_kill(vec1);
+    vec_kill(vec2);
+    vec_kill(dst);
+
+    printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+}
+
+void time_test2() {
+    int T = 1000000;
+    int dim = 100;
+    int min = -1e8;
+    int max = 1e8;
+
+    printf("%d vec_dot with dimension %d... ", T, dim);
+
+    vector *vec1 = vec_rand(dim, min, max);
+    vector *vec2 = vec_rand(dim, min, max);
+    clock_t start = clock();
+
+    for (int i = 0; i < T; i++) {
+        vec_dot(vec1, vec2);
+    }
+
+    clock_t end = clock();
+    vec_kill(vec1);
+    vec_kill(vec2);
+
+    printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+}
+
 int main() {
     printf("=== start vector tests ===\n");
 
@@ -229,6 +278,9 @@ int main() {
     func_test9();
     func_test10();
     func_test11();
+
+    time_test1();
+    time_test2();
 
     printf("=== pass vector tests ===\n");
 
