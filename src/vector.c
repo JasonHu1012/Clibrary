@@ -18,7 +18,7 @@ vector *vec_zero(int dim) {
     return ret;
 }
 
-static double rand_double(double min, double max) {
+static double double_rand(double min, double max) {
     return (double)rand() / RAND_MAX * (max - min) + min;
 }
 
@@ -29,7 +29,7 @@ vector *vec_rand(int dim, double min, double max) {
     vector *ret = (vector *)malloc(sizeof(vector));
     ret->entry = (double *)malloc(sizeof(double) * dim);
     for (int i = 0; i < dim; i++) {
-        ret->entry[i] = rand_double(min, max);
+        ret->entry[i] = double_rand(min, max);
     }
     ret->dim = dim;
     return ret;
@@ -118,5 +118,5 @@ void vec_proj(vector *vec1, vector *vec2, vector *dst) {
     assert(vec1->dim == dst->dim);
 
     int vec2_len = vec_len(vec2);
-    vec_mul(vec2, vec_dot(vec1, vec2) / vec2_len * vec2_len, dst);
+    vec_mul(vec2, vec_dot(vec1, vec2) / (vec2_len * vec2_len), dst);
 }
