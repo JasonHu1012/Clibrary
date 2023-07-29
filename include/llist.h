@@ -47,6 +47,9 @@ bool llst_is_empty(llist *llst);
 // return false if `iter` is at head or tail, otherwise true
 bool llst_it_move(llist_iter *llst_it, llist_way way);
 
+// move `llst_it` to head or tail of the linked list, decided by `way`
+void llst_it_move_to(llist_iter *llst_it, llist_way way);
+
 // copy the data of the node `llst_it` points at to `dst`
 void llst_it_get(llist_iter *llst_it, void *dst);
 

@@ -157,6 +157,12 @@ bool llst_it_move(llist_iter *llst_it, llist_way way) {
     return true;
 }
 
+void llst_it_move_to(llist_iter *llst_it, llist_way way) {
+    assert(llst_it->belong->size > 0);
+
+    llst_it->cur = way == LLST_HEAD ? llst_it->belong->head->next : llst_it->belong->tail->prev;
+}
+
 void llst_it_get(llist_iter *llst_it, void *dst) {
     memcpy(dst, llst_it->cur->data, llst_it->belong->width);
 }
