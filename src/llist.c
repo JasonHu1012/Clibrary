@@ -224,4 +224,6 @@ void llst_it_remove(llist_iter *llst_it, void *dst, llist_way way) {
     kill_node(llst_it->cur);
 
     llst_it->cur = new_cur;
+
+    llst_it->belong->size--;
 }

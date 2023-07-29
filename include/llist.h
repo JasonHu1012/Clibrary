@@ -63,6 +63,7 @@ void llst_it_insert(llist_iter *llst_it, void *src, llist_way way);
 // remove the node currently pointed by `llst_it` and copy the data to `dst`
 // decided by `way`, move `llst_it` to the next or previous node
 // `dst` can be NULL
+// if `llst_it` is at head/tail, `way` has no effect, and it still stays at head/tail
 void llst_it_remove(llist_iter *llst_it, void *dst, llist_way way);
 
 #endif

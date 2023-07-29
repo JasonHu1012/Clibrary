@@ -11,7 +11,7 @@ CFLAGS = -Wall -I$(INCLUDE)
 AR = ar
 ARFLAGS = rcs
 
-LIBRARYS = list stack deque ndarray vector
+LIBRARYS = list stack deque ndarray vector llist
 
 .PHONY: all test %.test clean
 
@@ -22,6 +22,7 @@ test: $(addsuffix .test,  $(LIBRARYS))
 %.test: $(BIN)%_test
 	$<
 
+# test executable
 $(BIN)list_test: $(TEST)list_test.c $(LIB)liblist.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
 
@@ -37,6 +38,10 @@ $(BIN)ndarray_test: $(TEST)ndarray_test.c $(LIB)libndarray.a | $(BIN)
 $(BIN)vector_test: $(TEST)vector_test.c $(LIB)libvector.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^ -lm
 
+$(BIN)llist_test: $(TEST)llist_test.c $(LIB)libllist.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^
+
+# static library
 $(LIB)liblist.a: $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
@@ -52,6 +57,10 @@ $(LIB)libndarray.a: $(OBJ)ndarray.o | $(LIB)
 $(LIB)libvector.a: $(OBJ)vector.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
+$(LIB)libllist.a: $(OBJ)llist.o | $(LIB)
+	$(AR) $(ARFLAGS) $@ $^
+
+# object files
 $(OBJ)%.o: $(SRC)%.c $(INCLUDE)%.h | $(OBJ)
 	$(CC) -o $@ -c $(CFLAGS) $<
 
