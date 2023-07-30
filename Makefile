@@ -41,6 +41,9 @@ $(BIN)vector_test: $(TEST)vector_test.c $(LIB)libvector.a | $(BIN)
 $(BIN)llist_test: $(TEST)llist_test.c $(LIB)libllist.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
 
+$(BIN)table_test: $(TEST)table_test.c $(LIB)libtable.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^
+
 # static library
 $(LIB)liblist.a: $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
@@ -58,6 +61,9 @@ $(LIB)libvector.a: $(OBJ)vector.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIB)libllist.a: $(OBJ)llist.o | $(LIB)
+	$(AR) $(ARFLAGS) $@ $^
+
+$(LIB)libtable.a: $(OBJ)table.o $(OBJ)llist.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 # object files

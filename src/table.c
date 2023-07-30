@@ -1,8 +1,8 @@
 // there's no resize mechanism in this implementation
-// so accessing time becomes longer when there are more items
 
 #include "table.h"
 #include "llist.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -36,6 +36,8 @@ static void kill_kv_pair(kv_pair *pair) {
 }
 
 table *tbl_init(int width) {
+    assert(width > 0);
+
     table *ret = (table *)malloc(sizeof(table));
     for (int i = 0; i < ARR_SIZE; i++) {
         ret->arr[i] = llst_init(sizeof(kv_pair *));
@@ -127,6 +129,7 @@ void tbl_set(table *tbl, char *key, void *src) {
     }
 
     // append new pair at head
+    // the newly set key can be accessed faster
     kv_pair *pair = init_kv_pair(key, src, tbl->width);
     llst_append(llst, &pair, LLST_HEAD);
 
@@ -159,9 +162,10 @@ bool tbl_contain(table *tbl, char *key) {
 
 void tbl_remove(table *tbl, char *key) {
     llist *llst = tbl->arr[hash(key)];
+    bool is_found = false;
 
     if (llst_is_empty(llst)) {
-        return;
+        assert(is_found);
     }
 
     llist_iter *llst_it = llst_it_init(llst, LLST_HEAD);
@@ -170,6 +174,8 @@ void tbl_remove(table *tbl, char *key) {
         llst_it_get(llst_it, &pair);
 
         if (strcmp(pair->key, key) == 0) {
+            is_found = true;
+
             kill_kv_pair(pair);
             llst_it_remove(llst_it, NULL, LLST_TAIL);
 
@@ -177,6 +183,8 @@ void tbl_remove(table *tbl, char *key) {
             break;
         }
     } while (llst_it_move(llst_it, LLST_TAIL));
+
+    assert(is_found);
 
     llst_it_kill(llst_it);
 }
