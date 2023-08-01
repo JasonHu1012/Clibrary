@@ -227,19 +227,28 @@ void time_test1() {
 
     list *lst = lst_init(sizeof(int));
     lst_set_size(lst, size);
-    int n;
+
+    int *indexes = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        indexes[i] = rand() % size;
+    }
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        n = rand();
-        lst_set(lst, rand() % size, &n);
+        lst_set(lst, indexes[i], &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        lst_get(lst, rand() % size, &n);
+        lst_get(lst, indexes[i], &values[i]);
     }
 
     clock_t end = clock();
     lst_kill(lst);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }

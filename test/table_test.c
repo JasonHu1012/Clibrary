@@ -179,32 +179,41 @@ void func_test6() {
 
 void time_test1() {
     int T = 100000;
+    int key_len = 10;
 
     printf("%d tbl_get and tbl_set... ", T);
 
     table *tbl = tbl_init(sizeof(int));
-    char key[3];
-    int value;
+
+    char **keys = (char **)malloc(sizeof(char *) * T);
+    for (int i = 0; i < T; i++) {
+        keys[i] = (char *)malloc(sizeof(char) * (key_len + 1));
+        for (int j = 0; j < key_len; j++) {
+            keys[i][j] = rand() % 256;
+        }
+        keys[i][key_len] = 0;
+    }
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        for (int j = 0; j < sizeof(key) - 1; j++) {
-            key[j] = rand() % 256;
-        }
-        key[sizeof(key) - 1] = 0;
-        value = rand();
-        tbl_set(tbl, key, &value);
+        tbl_set(tbl, keys[i], &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        for (int j = 0; j < sizeof(key) - 1; j++) {
-            key[j] = rand() % 256;
-        }
-        key[sizeof(key) - 1] = 0;
-        tbl_get(tbl, key, &value);
+        tbl_get(tbl, keys[i], &values[i]);
     }
 
     clock_t end = clock();
     tbl_kill(tbl);
+    for (int i = 0; i < T; i++) {
+        free(keys[i]);
+    }
+    free(keys);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }

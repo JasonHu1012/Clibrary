@@ -53,26 +53,35 @@ void time_test1() {
     printf("%d nda_get and nda_set... ", T);
 
     ndarray *nda = nda_init(sizes, sizeof(sizes) / sizeof(int), sizeof(int));
-    int indexes[3];
-    int n;
+
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+    int **indexes = (int **)malloc(sizeof(int *) * T);
+    for (int i = 0; i < T; i++) {
+        indexes[i] = (int *)malloc(sizeof(int) * sizeof(sizes) / sizeof(int));
+        for (int j = 0; j < sizeof(sizes) / sizeof(int); j++) {
+            indexes[i][j] = rand() % sizes[j];
+        }
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        for (int j = 0; j < sizeof(indexes) / sizeof(int); j++) {
-            indexes[j] = rand() % sizes[j];
-        }
-        n = rand();
-        nda_set(nda, indexes, &n);
+        nda_set(nda, indexes[i], &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        for (int j = 0; j < sizeof(indexes) / sizeof(int); j++) {
-            indexes[j] = rand() % sizes[j];
-        }
-        nda_get(nda, indexes, &n);
+        nda_get(nda, indexes[i], &values[i]);
     }
 
     clock_t end = clock();
     nda_kill(nda);
+    free(values);
+    for (int i = 0; i < T; i++) {
+        free(indexes[i]);
+    }
+    free(indexes);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }

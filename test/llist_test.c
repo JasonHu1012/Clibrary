@@ -244,19 +244,24 @@ void time_test1() {
     printf("%d llst_append and llst_remove... ", size);
 
     llist *llst = llst_init(sizeof(int));
-    int n;
+
+    int *values = (int *)malloc(sizeof(int) * size);
+    for (int i = 0; i < size; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < size; i++) {
-        n = rand();
-        llst_append(llst, &n, LLST_TAIL);
+        llst_append(llst, &values[i], LLST_TAIL);
     }
     for (int i = 0; i < size; i++) {
-        llst_remove(llst, &n, LLST_HEAD);
+        llst_remove(llst, &values[i], LLST_HEAD);
     }
 
     clock_t end = clock();
     llst_kill(llst);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
@@ -267,11 +272,12 @@ void time_test2() {
     printf("%d llst_it_move and llst_it_get... ", size);
 
     llist *llst = llst_init(sizeof(int));
+    int n;
     for (int i = 0; i < size; i++) {
-        llst_append(llst, &i, LLST_TAIL);
+        n = rand();
+        llst_append(llst, &n, LLST_TAIL);
     }
     llist_iter *llst_it = llst_it_init(llst, LLST_HEAD);
-    int n;
     clock_t start = clock();
 
     for (int i = 0; i < size; i++) {

@@ -11,7 +11,7 @@ CFLAGS = -Wall -I$(INCLUDE)
 AR = ar
 ARFLAGS = rcs
 
-LIBRARYS = list stack deque ndarray vector llist
+LIBRARYS = list stack deque ndarray vector llist table
 
 .PHONY: all test %.test clean
 
@@ -75,9 +75,7 @@ clean:
 
 $(OBJ):
 	mkdir -p $(OBJ)
-
 $(LIB):
 	mkdir -p $(LIB)
-
 $(BIN):
 	mkdir -p $(BIN)

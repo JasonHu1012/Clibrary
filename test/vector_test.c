@@ -224,19 +224,34 @@ void time_test1() {
 
     printf("%d vec_add with dimension %d... ", T, dim);
 
-    vector *vec1 = vec_rand(dim, min, max);
-    vector *vec2 = vec_rand(dim, min, max);
-    vector *dst = vec_zero(dim);
+    vector **vec1s = (vector **)malloc(sizeof(vector *) * T);
+    for (int i = 0; i < T; i++) {
+        vec1s[i] = vec_rand(dim, min, max);
+    }
+    vector **vec2s = (vector **)malloc(sizeof(vector *) * T);
+    for (int i = 0; i < T; i++) {
+        vec2s[i] = vec_rand(dim, min, max);
+    }
+    vector **dsts = (vector **)malloc(sizeof(vector *) * T);
+    for (int i = 0; i < T; i++) {
+        dsts[i] = vec_rand(dim, min, max);
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        vec_add(vec1, vec2, dst);
+        vec_add(vec1s[i], vec2s[i], dsts[i]);
     }
 
     clock_t end = clock();
-    vec_kill(vec1);
-    vec_kill(vec2);
-    vec_kill(dst);
+    for (int i = 0; i < T; i++) {
+        vec_kill(vec1s[i]);
+        vec_kill(vec2s[i]);
+        vec_kill(dsts[i]);
+    }
+    free(vec1s);
+    free(vec2s);
+    free(dsts);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
@@ -249,17 +264,28 @@ void time_test2() {
 
     printf("%d vec_dot with dimension %d... ", T, dim);
 
-    vector *vec1 = vec_rand(dim, min, max);
-    vector *vec2 = vec_rand(dim, min, max);
+    vector **vec1s = (vector **)malloc(sizeof(vector *) * T);
+    for (int i = 0; i < T; i++) {
+        vec1s[i] = vec_rand(dim, min, max);
+    }
+    vector **vec2s = (vector **)malloc(sizeof(vector *) * T);
+    for (int i = 0; i < T; i++) {
+        vec2s[i] = vec_rand(dim, min, max);
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        vec_dot(vec1, vec2);
+        vec_dot(vec1s[i], vec2s[i]);
     }
 
     clock_t end = clock();
-    vec_kill(vec1);
-    vec_kill(vec2);
+    for (int i = 0; i < T; i++) {
+        vec_kill(vec1s[i]);
+        vec_kill(vec2s[i]);
+    }
+    free(vec1s);
+    free(vec2s);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }

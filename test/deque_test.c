@@ -209,19 +209,24 @@ void time_test1() {
     printf("%d deq_push_head and deq_pop_head... ", T);
 
     deque *deq = deq_init(sizeof(int));
-    int n;
+
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        n = rand();
-        deq_push_head(deq, &n);
+        deq_push_head(deq, &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        deq_pop_head(deq, &n);
+        deq_pop_head(deq, &values[i]);
     }
 
     clock_t end = clock();
     deq_kill(deq);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
@@ -232,19 +237,24 @@ void time_test2() {
     printf("%d deq_push_tail and deq_pop_tail... ", T);
 
     deque *deq = deq_init(sizeof(int));
-    int n;
+
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        n = rand();
-        deq_push_tail(deq, &n);
+        deq_push_tail(deq, &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        deq_pop_tail(deq, &n);
+        deq_pop_tail(deq, &values[i]);
     }
 
     clock_t end = clock();
     deq_kill(deq);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
@@ -255,19 +265,24 @@ void time_test3() {
     printf("%d deq_push_tail and deq_pop_head... ", T);
 
     deque *deq = deq_init(sizeof(int));
-    int n;
+
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        n = rand();
-        deq_push_tail(deq, &n);
+        deq_push_tail(deq, &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        deq_pop_head(deq, &n);
+        deq_pop_head(deq, &values[i]);
     }
 
     clock_t end = clock();
     deq_kill(deq);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
@@ -278,19 +293,24 @@ void time_test4() {
     printf("%d deq_push_head and deq_pop_tail... ", T);
 
     deque *deq = deq_init(sizeof(int));
-    int n;
+
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        n = rand();
-        deq_push_head(deq, &n);
+        deq_push_head(deq, &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        deq_pop_tail(deq, &n);
+        deq_pop_tail(deq, &values[i]);
     }
 
     clock_t end = clock();
     deq_kill(deq);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }

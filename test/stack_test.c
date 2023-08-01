@@ -101,19 +101,24 @@ void time_test1() {
     printf("%d stk_push and stk_pop... ", T);
 
     stack *stk = stk_init(sizeof(int));
-    int n;
+
+    int *values = (int *)malloc(sizeof(int) * T);
+    for (int i = 0; i < T; i++) {
+        values[i] = rand();
+    }
+
     clock_t start = clock();
 
     for (int i = 0; i < T; i++) {
-        n = rand();
-        stk_push(stk, &n);
+        stk_push(stk, &values[i]);
     }
     for (int i = 0; i < T; i++) {
-        stk_pop(stk, &n);
+        stk_pop(stk, &values[i]);
     }
 
     clock_t end = clock();
     stk_kill(stk);
+    free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
