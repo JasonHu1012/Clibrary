@@ -42,6 +42,8 @@ void func_test2() {
         }
     }
 
+    nda_kill(nda);
+
     printf("pass\n");
 }
 

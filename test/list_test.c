@@ -128,6 +128,8 @@ void func_test7() {
         assert(lst_size(lst) == size + i);
     }
 
+    lst_kill(lst);
+
     printf("pass\n");
 }
 
@@ -248,6 +250,7 @@ void time_test1() {
 
     clock_t end = clock();
     lst_kill(lst);
+    free(indexes);
     free(values);
 
     printf("%f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);

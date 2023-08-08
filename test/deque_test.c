@@ -34,6 +34,8 @@ void func_test2() {
     assert(deq_size(deq) == 0);
     assert(deq_is_empty(deq));
 
+    deq_kill(deq);
+
     printf("pass\n");
 }
 

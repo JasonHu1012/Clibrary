@@ -59,6 +59,8 @@ void tbl_kill(table *tbl) {
 
                 kill_kv_pair(pair);
             } while (llst_it_move(llst_it, LLST_TAIL));
+
+            llst_it_kill(llst_it);
         }
 
         llst_kill(llst);

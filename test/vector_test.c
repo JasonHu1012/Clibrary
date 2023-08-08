@@ -58,6 +58,7 @@ void func_test3() {
     }
 
     vec_kill(vec);
+    free(arr);
 
     printf("pass\n");
 }
