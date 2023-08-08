@@ -72,7 +72,7 @@ static int hash(char *key) {
 
     int ret = 0;
     for (int i = 0; i < len; i += sizeof(int)) {
-        int cur;
+        int cur = 0;
         memcpy(&cur, key + i, len - i < sizeof(int) ? len - i : sizeof(int));
         ret ^= cur;
     }
