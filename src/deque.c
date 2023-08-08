@@ -150,3 +150,5 @@ void deq_tail(deque *deq, void *dst) {
             (char *)deq->tail->data + deq->width * (deq->end - 1),
         deq->width);
 }
+
+#undef SINGLE_NODE_SIZE

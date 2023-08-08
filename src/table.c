@@ -222,3 +222,5 @@ char **tbl_keys(table *tbl) {
     }
     return ret;
 }
+
+#undef ARR_SIZE

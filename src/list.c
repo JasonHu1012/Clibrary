@@ -153,3 +153,5 @@ int lst_count(list *lst, void *target) {
     }
     return count;
 }
+
+#undef INITIAL_REAL_SIZE

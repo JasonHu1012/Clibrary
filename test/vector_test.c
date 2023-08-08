@@ -312,3 +312,5 @@ int main() {
 
     return 0;
 }
+
+#undef EPSILON
