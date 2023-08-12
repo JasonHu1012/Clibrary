@@ -44,6 +44,10 @@ void func_test2() {
         assert(value == i * 2);
         assert(tbl_size(tbl) == size);
     }
+    value = -1;
+    tbl_get(tbl, "unset key", &value);
+    assert(value == -1);
+    assert(tbl_size(tbl) == size);
 
     tbl_kill(tbl);
 
