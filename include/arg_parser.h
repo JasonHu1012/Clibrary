@@ -38,10 +38,11 @@ void arg_register_bool(arg_parser *arg, char *option, char *help);
 void arg_parse(arg_parser *arg, int argc, char **argv);
 
 // return whether `option` in `arg` is parsed
+// `option` can be unregistered
 bool arg_is_parsed(arg_parser *arg, char *option);
 
 // copy the parsed result of `option` in `arg` to `dst`
-// except for bool type options, `option` must has been parsed
+// if `option` isn't registered or is unparsed, `dst` won't be modified
 // with bool type options, the result is equal to `arg_is_parsed`
 // with string type options, `dst` should be (char **) and user should `free` it after usage
 void arg_get(arg_parser *arg, char *option, void *dst);
