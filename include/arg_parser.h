@@ -1,5 +1,5 @@
-#ifndef __ARG_PARSER.h
-#define __ARG_PARSER.h
+#ifndef __ARG_PARSER_H
+#define __ARG_PARSER_H
 
 #include <stdbool.h>
 
@@ -15,7 +15,7 @@ typedef enum {
 arg_parser *arg_init();
 
 // kill `arg`
-void *arg_kill(arg_parser *arg);
+void arg_kill(arg_parser *arg);
 
 // with "-h" or "--help", options list and `help` will be printed to stderr
 // therefore, it's not allowed to register "-h" or "--help"

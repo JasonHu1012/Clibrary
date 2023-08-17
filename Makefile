@@ -66,6 +66,9 @@ $(LIB)libllist.a: $(OBJ)llist.o | $(LIB)
 $(LIB)libtable.a: $(OBJ)table.o $(OBJ)llist.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
+$(LIB)libarg_parser.a: $(OBJ)arg_parser.o $(OBJ)table.o $(OBJ)llist.o | $(LIB)
+	$(AR) $(ARFLAGS) $@ $^
+
 # object files
 $(OBJ)%.o: $(SRC)%.c $(INCLUDE)%.h | $(OBJ)
 	$(CC) -o $@ -c $(CFLAGS) $<
