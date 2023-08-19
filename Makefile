@@ -11,7 +11,7 @@ CFLAGS = -Wall -I$(INCLUDE)
 AR = ar
 ARFLAGS = rcs
 
-LIBRARYS = list stack deque ndarray vector llist table
+LIBRARYS = list stack deque ndarray vector llist table arg_parser
 
 .PHONY: all test %.test clean
 
@@ -42,6 +42,9 @@ $(BIN)llist_test: $(TEST)llist_test.c $(LIB)libllist.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
 
 $(BIN)table_test: $(TEST)table_test.c $(LIB)libtable.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^
+
+$(BIN)arg_parser_test: $(TEST)arg_parser_test.c $(LIB)libarg_parser.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
 
 # static library
