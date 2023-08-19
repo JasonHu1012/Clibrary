@@ -19,6 +19,9 @@ typedef struct {
     char *help;
 } option_info;
 
+static int transit_str_to_int_state(char c, int state);
+static int transit_str_to_double_state(char c, int state);
+
 static option_info *init_option_info(bool is_bool_option, char *help, arg_type type) {
     option_info *ret = (option_info *)malloc(sizeof(option_info));
     ret->is_bool_option = is_bool_option;
@@ -197,59 +200,6 @@ static void print_help(table *tbl, char *name, FILE *file) {
     free(keys);
 }
 
-// draw FSM to understand
-int transit_str_to_int_state(char c, int state) {
-    switch (state) {
-        case -1:
-        {
-            // invalid
-            return -1;
-        }
-        case 0:
-        {
-            // ""
-            if (c == '0') {
-                return 2;
-            }
-            if (c == '-') {
-                return 1;
-            }
-            if (c >= '1' && c <= '9') {
-                return 3;
-            }
-            return -1;
-        }
-        case 1:
-        {
-            // "-"
-            if (c == '0') {
-                return 2;
-            }
-            if (c >= '1' && c <= '9') {
-                return 3;
-            }
-            return -1;
-        }
-        case 2:
-        {
-            // "-?0"
-            return -1;
-        }
-        case 3:
-        {
-            // "-?[1-9][0-9]*"
-            if (c >= '0' && c <= '9') {
-                return 3;
-            }
-            return -1;
-        }
-        default:
-        {
-            return -1;
-        }
-    }
-}
-
 static bool str_to_int(char *str, int *dst) {
     int ret = 0;
     int sign = 1;
@@ -278,73 +228,6 @@ static bool str_to_int(char *str, int *dst) {
     ret *= sign;
     memcpy(dst, &ret, sizeof(int));
     return true;
-}
-
-// draw FSM to understand
-int transit_str_to_double_state(char c, int state) {
-    switch (state) {
-        case -1:
-        {
-            // invalid
-            return -1;
-        }
-        case 0:
-        {
-            // ""
-            if (c == '-') {
-                return 1;
-            }
-            if (c == '.') {
-                return 2;
-            }
-            if (c >= '0' && c <= '9') {
-                return 3;
-            }
-            return -1;
-        }
-        case 1:
-        {
-            // "-"
-            if (c == '.') {
-                return 2;
-            }
-            if (c >= '0' && c <= '9') {
-                return 3;
-            }
-            return -1;
-        }
-        case 2:
-        {
-            // "-?\."
-            if (c >= '0' && c <= '9') {
-                return 4;
-            }
-            return -1;
-        }
-        case 3:
-        {
-            // "-?[0-9]+"
-            if (c == '.') {
-                return 4;
-            }
-            if (c >= '0' && c <= '9') {
-                return 3;
-            }
-            return -1;
-        }
-        case 4:
-        {
-            // "-?(?:[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)"
-            if (c >= '0' && c <= '9') {
-                return 4;
-            }
-            return -1;
-        }
-        default:
-        {
-            return -1;
-        }
-    }
 }
 
 static bool str_to_double(char *str, double *dst) {
@@ -537,6 +420,126 @@ void arg_get(arg_parser *arg, char *option, void *dst) {
             *(char **)dst = malloc(sizeof(char) * (strlen(info->data) + 1));
             strcpy(*(char **)dst, (char *)info->data);
             break;
+        }
+    }
+}
+
+// draw FSM to understand
+static int transit_str_to_int_state(char c, int state) {
+    switch (state) {
+        case -1:
+        {
+            // invalid
+            return -1;
+        }
+        case 0:
+        {
+            // ""
+            if (c == '0') {
+                return 2;
+            }
+            if (c == '-') {
+                return 1;
+            }
+            if (c >= '1' && c <= '9') {
+                return 3;
+            }
+            return -1;
+        }
+        case 1:
+        {
+            // "-"
+            if (c == '0') {
+                return 2;
+            }
+            if (c >= '1' && c <= '9') {
+                return 3;
+            }
+            return -1;
+        }
+        case 2:
+        {
+            // "-?0"
+            return -1;
+        }
+        case 3:
+        {
+            // "-?[1-9][0-9]*"
+            if (c >= '0' && c <= '9') {
+                return 3;
+            }
+            return -1;
+        }
+        default:
+        {
+            return -1;
+        }
+    }
+}
+
+// draw FSM to understand
+static int transit_str_to_double_state(char c, int state) {
+    switch (state) {
+        case -1:
+        {
+            // invalid
+            return -1;
+        }
+        case 0:
+        {
+            // ""
+            if (c == '-') {
+                return 1;
+            }
+            if (c == '.') {
+                return 2;
+            }
+            if (c >= '0' && c <= '9') {
+                return 3;
+            }
+            return -1;
+        }
+        case 1:
+        {
+            // "-"
+            if (c == '.') {
+                return 2;
+            }
+            if (c >= '0' && c <= '9') {
+                return 3;
+            }
+            return -1;
+        }
+        case 2:
+        {
+            // "-?\."
+            if (c >= '0' && c <= '9') {
+                return 4;
+            }
+            return -1;
+        }
+        case 3:
+        {
+            // "-?[0-9]+"
+            if (c == '.') {
+                return 4;
+            }
+            if (c >= '0' && c <= '9') {
+                return 3;
+            }
+            return -1;
+        }
+        case 4:
+        {
+            // "-?(?:[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)"
+            if (c >= '0' && c <= '9') {
+                return 4;
+            }
+            return -1;
+        }
+        default:
+        {
+            return -1;
         }
     }
 }
