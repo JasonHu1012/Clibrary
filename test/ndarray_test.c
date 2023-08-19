@@ -16,11 +16,9 @@ void func_test1() {
 }
 
 void func_test2() {
-    // remember to modify the nested loop if dimension is changed
-    int sizes[3] = { 50, 100, 20 };
-
     printf("nda_get, nda_set... ");
 
+    int sizes[3] = { 50, 100, 20 };
     ndarray *nda = nda_init(sizes, sizeof(sizes) / sizeof(int), sizeof(int));
 
     for (int i = 0; i < sizes[0]; i++) {
@@ -48,12 +46,11 @@ void func_test2() {
 }
 
 void time_test1() {
-    // remember to modify indexes if dimension is changed
-    int sizes[3] = { 50, 100, 20 };
     int T = 10000000;
 
     printf("%d nda_get and nda_set... ", T);
 
+    int sizes[3] = { 50, 100, 20 };
     ndarray *nda = nda_init(sizes, sizeof(sizes) / sizeof(int), sizeof(int));
 
     int *values = (int *)malloc(sizeof(int) * T);
