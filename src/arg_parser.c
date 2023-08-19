@@ -27,8 +27,13 @@ static option_info *init_option_info(bool is_bool_option, char *help, arg_type t
     }
     ret->is_parsed = false;
     ret->data = NULL;
-    ret->help = (char *)malloc(sizeof(char) * (strlen(help) + 1));
-    strcpy(ret->help, help);
+    if (help) {
+        ret->help = (char *)malloc(sizeof(char) * (strlen(help) + 1));
+        strcpy(ret->help, help);
+    }
+    else {
+        ret->help = NULL;
+    }
     return ret;
 }
 
@@ -181,7 +186,7 @@ static void print_help(table *tbl, char *name, FILE *file) {
             }
         }
 
-        if (info->help && strcmp(info->help, "") != 0) {
+        if (info->help && strlen(info->help) > 0) {
             fprintf(file, ": %s", info->help);
         }
         fprintf(file, "\n");
@@ -203,7 +208,7 @@ int transit_str_to_int_state(char c, int state) {
         case 0:
         {
             // ""
-            if (c == 0) {
+            if (c == '0') {
                 return 2;
             }
             if (c == '-') {
@@ -217,6 +222,9 @@ int transit_str_to_int_state(char c, int state) {
         case 1:
         {
             // "-"
+            if (c == '0') {
+                return 2;
+            }
             if (c >= '1' && c <= '9') {
                 return 3;
             }
@@ -224,7 +232,7 @@ int transit_str_to_int_state(char c, int state) {
         }
         case 2:
         {
-            // "0"
+            // "-?0"
             return -1;
         }
         case 3:
@@ -498,12 +506,16 @@ void arg_get(arg_parser *arg, char *option, void *dst) {
     option_info *info = NULL;
     tbl_get(arg->arguments, option, &info);
 
-    if (!info || !info->is_parsed) {
+    if (!info) {
         return;
     }
 
     if (info->is_bool_option) {
         memcpy(dst, &info->is_parsed, sizeof(bool));
+        return;
+    }
+
+    if (!info->is_parsed) {
         return;
     }
 
