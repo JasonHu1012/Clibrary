@@ -1,5 +1,5 @@
-#ifndef __ARG_PARSER_H
-#define __ARG_PARSER_H
+#ifndef _ARG_PARSER_H
+#define _ARG_PARSER_H
 
 #include <stdbool.h>
 
