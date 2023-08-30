@@ -427,11 +427,6 @@ void arg_get(arg_parser *arg, char *option, void *dst) {
 // draw FSM to understand
 static int transit_str_to_int_state(char c, int state) {
     switch (state) {
-        case -1:
-        {
-            // invalid
-            return -1;
-        }
         case 0:
         {
             // ""
@@ -472,6 +467,7 @@ static int transit_str_to_int_state(char c, int state) {
         }
         default:
         {
+            // invalid
             return -1;
         }
     }
@@ -480,11 +476,6 @@ static int transit_str_to_int_state(char c, int state) {
 // draw FSM to understand
 static int transit_str_to_double_state(char c, int state) {
     switch (state) {
-        case -1:
-        {
-            // invalid
-            return -1;
-        }
         case 0:
         {
             // ""
@@ -539,6 +530,7 @@ static int transit_str_to_double_state(char c, int state) {
         }
         default:
         {
+            // invalid
             return -1;
         }
     }
