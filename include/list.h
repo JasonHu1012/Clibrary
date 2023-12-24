@@ -27,7 +27,7 @@ void lst_get(list *lst, int index, void *dst);
 // copy `src` to the `index`-th element of `lst`
 void lst_set(list *lst, int index, void *src);
 
-// append `src` at the end of `lst`
+// append (copy) `src` at the end of `lst`
 void lst_append(list *lst, void *src);
 
 // remove the last element of `lst`
