@@ -25,7 +25,8 @@ void json_kill(json_data *json);
 bool json_is_valid(char *json_str);
 
 // transform `json` to string and user should `free` it
-char *json_to_str(json_data *json);
+// `sort` decides whether to sort (asc) the keys of object
+char *json_to_str(json_data *json, bool sort);
 
 // return the type of `json`
 JSON_TYPE json_type(json_data *json);

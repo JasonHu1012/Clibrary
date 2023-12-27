@@ -8,15 +8,27 @@
 
 #define INDENT 2
 
+typedef struct obj_data {
+    table *data;
+    // used to store the original order of keys
+    list *keys;
+} obj_data;
+
 struct json_data {
     JSON_TYPE type;
+    // the type of `data` is:
+    // object: (obj_data *)
+    // array: (list *)
+    // boolean: (bool *)
+    // number: (double *)
+    // string: (char *)
     void *data;
 };
 
 static json_data *parse_general(char *json_str, int *i);
 static bool general_is_valid(char *json_str, int *i, bool *is_empty);
 static int general_strlen(json_data *json, int level);
-static void general_to_str(json_data *json, int level, char *ret, int *ret_i);
+static void general_to_str(json_data *json, int level, bool sort, char *ret, int *ret_i);
 
 static bool is_ignored_char(char c) {
     if (c == ' ' ||
@@ -26,6 +38,10 @@ static bool is_ignored_char(char c) {
         return true;
     }
     return false;
+}
+
+static int str_cmp(void const *a, void const *b) {
+    return strcmp((char *)a, (char *)b);
 }
 
 // return parsed result of `json_str`
@@ -40,20 +56,24 @@ void json_kill(json_data *json) {
     switch (json->type) {
         case JSON_OBJECT:
         {
-            table *tbl = (table *)json->data;
-            char **keys = tbl_keys(tbl);
-            int size = tbl_size(tbl);
+            table *tbl = ((obj_data *)json->data)->data;
+            list *keys = ((obj_data *)json->data)->keys;
+            int size = lst_size(keys);
 
             for (int i = 0; i < size; i++) {
+                char *key;
+                lst_get(keys, i, &key);
+
                 json_data *sub_json;
-                tbl_get(tbl, keys[i], &sub_json);
+                tbl_get(tbl, key, &sub_json);
 
                 json_kill(sub_json);
-                free(keys[i]);
+                free(key);
             }
 
             tbl_kill(tbl);
-            free(keys);
+            lst_kill(keys);
+            free(json->data);
 
             break;
         }
@@ -107,11 +127,11 @@ bool json_is_valid(char *json_str) {
     return true;
 }
 
-char *json_to_str(json_data *json) {
+char *json_to_str(json_data *json, bool sort) {
     int len = general_strlen(json, 0);
     char *ret = (char *)malloc(sizeof(char) * (len + 1));
     int ret_i = 0;
-    general_to_str(json, 0, ret, &ret_i);
+    general_to_str(json, 0, sort, ret, &ret_i);
     ret[len] = 0;
     return ret;
 }
@@ -123,7 +143,7 @@ JSON_TYPE json_type(json_data *json) {
 char **json_obj_keys(json_data *json) {
     assert(json->type == JSON_OBJECT);
 
-    table *tbl = (table *)json->data;
+    table *tbl = ((obj_data *)json->data)->data;
 
     return tbl_keys(tbl);
 }
@@ -131,7 +151,7 @@ char **json_obj_keys(json_data *json) {
 json_data *json_obj_get(json_data *json, char *key) {
     assert(json->type == JSON_OBJECT);
 
-    table *tbl = (table *)json->data;
+    table *tbl = ((obj_data *)json->data)->data;
 
     json_data *ret = NULL;
     tbl_get(tbl, key, &ret);
@@ -178,11 +198,19 @@ char *json_str_get(json_data *json) {
     return ret;
 }
 
-static void obj_to_str(json_data *json, int level, char *ret, int *ret_i) {
-    table *tbl = (table *)json->data;
+static void obj_to_str(json_data *json, int level, bool sort, char *ret, int *ret_i) {
+    table *tbl = ((obj_data *)json->data)->data;
+    list *keys_ = ((obj_data *)json->data)->keys;
 
-    int size = tbl_size(tbl);
-    char **keys = tbl_keys(tbl);
+    int size = lst_size(keys_);
+    char **keys = (char **)malloc(sizeof(char *) * size);
+    for (int i = 0; i < size; i++) {
+        lst_get(keys_, i, &keys[i]);
+    }
+
+    if (sort) {
+        qsort(keys, size, sizeof(char *), str_cmp);
+    }
 
     // "{\n"
     sprintf(ret + *ret_i, "{\n");
@@ -205,7 +233,7 @@ static void obj_to_str(json_data *json, int level, char *ret, int *ret_i) {
         *ret_i += 2;
 
         // value
-        general_to_str(sub_json, level + 1, ret, ret_i);
+        general_to_str(sub_json, level + 1, sort, ret, ret_i);
 
         if (i < size - 1) {
             // ","
@@ -213,8 +241,6 @@ static void obj_to_str(json_data *json, int level, char *ret, int *ret_i) {
         }
         // "\n"
         ret[(*ret_i)++] = '\n';
-
-        free(keys[i]);
     }
 
     // indent before "}"
@@ -227,7 +253,7 @@ static void obj_to_str(json_data *json, int level, char *ret, int *ret_i) {
     free(keys);
 }
 
-static void arr_to_str(json_data *json, int level, char *ret, int *ret_i) {
+static void arr_to_str(json_data *json, int level, bool sort, char *ret, int *ret_i) {
     list *lst = (list *)json->data;
 
     int size = lst_size(lst);
@@ -245,7 +271,7 @@ static void arr_to_str(json_data *json, int level, char *ret, int *ret_i) {
         *ret_i += (level + 1) * INDENT;
 
         // sub json
-        general_to_str(sub_json, level + 1, ret, ret_i);
+        general_to_str(sub_json, level + 1, sort, ret, ret_i);
 
         if (i < size - 1) {
             // ","
@@ -275,12 +301,21 @@ static void bool_to_str(json_data *json, char *ret, int *ret_i) {
 }
 
 static void num_to_str(json_data *json, char *ret, int *ret_i) {
-    sprintf(ret + *ret_i, "%f", *(double *)json->data);
+    double dnum = *(double *)json->data;
+    long long lnum = (long long)dnum;
+
+    if (dnum == (double)lnum) {
+        sprintf(ret + *ret_i, "%lld", lnum);
+    }
+    else {
+        sprintf(ret + *ret_i, "%f", dnum);
+    }
+
     *ret_i += strlen(ret + *ret_i);
 }
 
 static void str_to_str(json_data *json, char *ret, int *ret_i) {
-    sprintf(ret + *ret_i, "%s", (char *)json->data);
+    sprintf(ret + *ret_i, "\"%s\"", (char *)json->data);
     *ret_i += strlen(ret + *ret_i);
 }
 
@@ -289,16 +324,16 @@ static void null_to_str(json_data *json, char *ret, int *ret_i) {
     *ret_i += 4;
 }
 
-static void general_to_str(json_data *json, int level, char *ret, int *ret_i) {
+static void general_to_str(json_data *json, int level, bool sort, char *ret, int *ret_i) {
     switch (json->type) {
         case JSON_OBJECT:
         {
-            obj_to_str(json, level, ret, ret_i);
+            obj_to_str(json, level, sort, ret, ret_i);
             break;
         }
         case JSON_ARRAY:
         {
-            arr_to_str(json, level, ret, ret_i);
+            arr_to_str(json, level, sort, ret, ret_i);
             break;
         }
         case JSON_BOOLEAN:
@@ -329,7 +364,7 @@ static void general_to_str(json_data *json, int level, char *ret, int *ret_i) {
 }
 
 static int obj_strlen(json_data *json, int level) {
-    table *tbl = (table *)json->data;
+    table *tbl = ((obj_data *)json->data)->data;
 
     int size = tbl_size(tbl);
     char **keys = tbl_keys(tbl);
@@ -390,12 +425,21 @@ static int bool_strlen(json_data *json) {
 
 static int num_strlen(json_data *json) {
     char s[32];
-    sprintf(s, "%f", *(double *)json->data);
+    double dnum = *(double *)json->data;
+    long long lnum = (long long)dnum;
+
+    if (dnum == (double)lnum) {
+        sprintf(s, "%lld", lnum);
+    }
+    else {
+        sprintf(s, "%f", dnum);
+    }
+
     return strlen(s);
 }
 
 static int str_strlen(json_data *json) {
-    return strlen((char *)json->data);
+    return strlen((char *)json->data) + 2;
 }
 
 static int null_strlen(json_data *json) {
@@ -893,57 +937,57 @@ static int transit_null_state(char c, int state) {
 }
 
 // `s` is valid
-static char *decode_string(char *s) {
-    int len = 0;
+static char *decode_string(char *s, int len) {
+    int ret_len = 0;
     for (int i = 0; s[i]; i++) {
         if (s[i] == '\\') {
             i++;
         }
-        len++;
+        ret_len++;
     }
 
-    char *ret = (char *)malloc(sizeof(char) * (len + 1));
-    len = 0;
-    for (int i = 0; s[i]; i++) {
+    char *ret = (char *)malloc(sizeof(char) * (ret_len + 1));
+    ret_len = 0;
+    for (int i = 0; i < len; i++) {
         if (s[i] == '\\') {
             switch (s[++i]) {
                 case '\\':
                 {
-                    ret[len++] = '\\';
+                    ret[ret_len++] = '\\';
                     break;
                 }
                 case '/':
                 {
-                    ret[len++] = '/';
+                    ret[ret_len++] = '/';
                     break;
                 }
                 case 'n':
                 {
-                    ret[len++] = '\n';
+                    ret[ret_len++] = '\n';
                     break;
                 }
                 case 'r':
                 {
-                    ret[len++] = '\r';
+                    ret[ret_len++] = '\r';
                     break;
                 }
                 case 't':
                 {
-                    ret[len++] = '\t';
+                    ret[ret_len++] = '\t';
                     break;
                 }
                 case 'b':
                 {
-                    ret[len++] = '\b';
+                    ret[ret_len++] = '\b';
                     break;
                 }
                 case 'f':
                 {
-                    ret[len++] = '\f';
+                    ret[ret_len++] = '\f';
                 }
                 case '"':
                 {
-                    ret[len++] = '"';
+                    ret[ret_len++] = '"';
                     break;
                 }
             }
@@ -951,9 +995,9 @@ static char *decode_string(char *s) {
             continue;
         }
 
-        ret[len++] = s[i];
+        ret[ret_len++] = s[i];
     }
-    ret[len++] = 0;
+    ret[ret_len++] = 0;
     return ret;
 }
 
@@ -1085,15 +1129,14 @@ static json_data *parse_str(char *json_str, int *i) {
 
     json_data *ret = (json_data *)malloc(sizeof(json_data));
     ret->type = JSON_STRING;
-    json_str[end] = 0;
-    ret->data = decode_string(json_str + start);
-    json_str[end] = '"';
+    ret->data = decode_string(json_str + start, end - start);
     return ret;
 }
 
 // `json_str` is valid
 static json_data *parse_obj(char *json_str, int *i) {
     table *tbl = tbl_init(sizeof(json_data *));
+    list *keys = lst_init(sizeof(char *));
     char *key;
     int state = 0;
 
@@ -1134,8 +1177,7 @@ static json_data *parse_obj(char *json_str, int *i) {
             json_data *value_json = parse_general(json_str, i);
 
             tbl_set(tbl, key, &value_json);
-
-            free(key);
+            lst_append(keys, &key);
 
             state = 5;
         }
@@ -1145,9 +1187,13 @@ static json_data *parse_obj(char *json_str, int *i) {
         }
     }
 
+    obj_data *data = (obj_data *)malloc(sizeof(obj_data));
+    data->data = tbl;
+    data->keys = keys;
+
     json_data *ret = (json_data *)malloc(sizeof(json_data));
     ret->type = JSON_OBJECT;
-    ret->data = tbl;
+    ret->data = data;
     return ret;
 }
 
