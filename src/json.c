@@ -41,7 +41,7 @@ static bool is_ignored_char(char c) {
 }
 
 static int str_cmp(void const *a, void const *b) {
-    return strcmp((char *)a, (char *)b);
+    return strcmp(*(char **)a, *(char **)b);
 }
 
 // return parsed result of `json_str`
@@ -140,6 +140,14 @@ JSON_TYPE json_type(json_data *json) {
     return json->type;
 }
 
+int json_obj_size(json_data *json) {
+    assert(json->type == JSON_OBJECT);
+
+    table *tbl = ((obj_data *)json->data)->data;
+
+    return tbl_size(tbl);
+}
+
 char **json_obj_keys(json_data *json) {
     assert(json->type == JSON_OBJECT);
 
@@ -158,7 +166,7 @@ json_data *json_obj_get(json_data *json, char *key) {
     return ret;
 }
 
-int json_arr_len(json_data *json) {
+int json_arr_size(json_data *json) {
     assert(json->type == JSON_ARRAY);
 
     list *lst = (list *)json->data;
@@ -205,6 +213,7 @@ static void obj_to_str(json_data *json, int level, bool sort, char *ret, int *re
     int size = lst_size(keys_);
     char **keys = (char **)malloc(sizeof(char *) * size);
     for (int i = 0; i < size; i++) {
+        // copy strings in list to array, don't free the strings
         lst_get(keys_, i, &keys[i]);
     }
 

@@ -31,7 +31,11 @@ char *json_to_str(json_data *json, bool sort);
 // return the type of `json`
 JSON_TYPE json_type(json_data *json);
 
+// return the size of an object type `json`
+int json_obj_size(json_data *json);
+
 // return the keys of an object type `json`
+// the length of the array can be retrieved by `json_obj_size`
 // user should `free` the returned array of strings
 char **json_obj_keys(json_data *json);
 
@@ -41,7 +45,7 @@ char **json_obj_keys(json_data *json);
 json_data *json_obj_get(json_data *json, char *key);
 
 // return the length of an array type `json`
-int json_arr_len(json_data *json);
+int json_arr_size(json_data *json);
 
 // return the `index`-th element of an array type `json`
 // user should not kill the returned json data
