@@ -1216,8 +1216,8 @@ static json_data *parse_num(char *json_str, int *i) {
 
 // `json_str` is valid
 static json_data *parse_str(char *json_str, int *i) {
-    int start;
-    int end;
+    int start = -1;
+    int end = -1;
     int state = 0;
 
     for (; json_str[*i]; (*i)++) {
