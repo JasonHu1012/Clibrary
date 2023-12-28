@@ -36,7 +36,7 @@ int json_obj_size(json_data *json);
 
 // return the keys of an object type `json`
 // the length of the array can be retrieved by `json_obj_size`
-// user should `free` the returned array of strings
+// user should `free` the array and the strings
 char **json_obj_keys(json_data *json);
 
 // return `json[key]` where `json` is object type

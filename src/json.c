@@ -206,6 +206,77 @@ char *json_str_get(json_data *json) {
     return ret;
 }
 
+static char *encode_string(char *s) {
+    int ret_len = 0;
+    for (int i = 0; s[i]; i++) {
+        if (s[i] == '\\' ||
+            s[i] == '\n' ||
+            s[i] == '\r' ||
+            s[i] == '\t' ||
+            s[i] == '\b' ||
+            s[i] == '\f' ||
+            s[i] == '"') {
+            ret_len++;
+        }
+        ret_len++;
+    }
+
+    char *ret = (char *)malloc(sizeof(char) * (ret_len + 1));
+    ret_len = 0;
+    for (int i = 0; s[i]; i++) {
+        switch (s[i]) {
+            case '\\':
+            {
+                ret[ret_len++] = '\\';
+                ret[ret_len++] = '\\';
+                break;
+            }
+            case '\n':
+            {
+                ret[ret_len++] = '\\';
+                ret[ret_len++] = 'n';
+                break;
+            }
+            case '\r':
+            {
+                ret[ret_len++] = '\\';
+                ret[ret_len++] = 'r';
+                break;
+            }
+            case '\t':
+            {
+                ret[ret_len++] = '\\';
+                ret[ret_len++] = 't';
+                break;
+            }
+            case '\b':
+            {
+                ret[ret_len++] = '\\';
+                ret[ret_len++] = 'b';
+                break;
+            }
+            case '\f':
+            {
+                ret[ret_len++] = '\\';
+                ret[ret_len++] = 'f';
+                break;
+            }
+            case '"':
+            {
+                ret[ret_len++] = '\\';
+                ret[ret_len++] = '"';
+                break;
+            }
+            default:
+            {
+                ret[ret_len++] = s[i];
+            }
+        }
+    }
+    ret[ret_len++] = 0;
+    return ret;
+}
+
 static void obj_to_str(json_data *json, int level, bool sort, char *ret, int *ret_i) {
     table *tbl = ((obj_data *)json->data)->data;
     list *keys_ = ((obj_data *)json->data)->keys;
@@ -234,8 +305,10 @@ static void obj_to_str(json_data *json, int level, bool sort, char *ret, int *re
         *ret_i += (level + 1) * INDENT;
 
         // key
-        sprintf(ret + *ret_i, "\"%s\"", keys[i]);
-        *ret_i += 2 + strlen(keys[i]);
+        char *encoded = encode_string(keys[i]);
+        sprintf(ret + *ret_i, "\"%s\"", encoded);
+        *ret_i += 2 + strlen(encoded);
+        free(encoded);
 
         // ": "
         sprintf(ret + *ret_i, ": ");
@@ -324,8 +397,11 @@ static void num_to_str(json_data *json, char *ret, int *ret_i) {
 }
 
 static void str_to_str(json_data *json, char *ret, int *ret_i) {
-    sprintf(ret + *ret_i, "\"%s\"", (char *)json->data);
+    char *s = (char *)json->data;
+    char *encoded = encode_string(s);
+    sprintf(ret + *ret_i, "\"%s\"", encoded);
     *ret_i += strlen(ret + *ret_i);
+    free(encoded);
 }
 
 static void null_to_str(json_data *json, char *ret, int *ret_i) {
@@ -387,7 +463,9 @@ static int obj_strlen(json_data *json, int level) {
         // indent before key
         ret += (level + 1) * INDENT;
         // key
-        ret += 2 + strlen(keys[i]);
+        char *encoded = encode_string(keys[i]);
+        ret += 2 + strlen(encoded);
+        free(encoded);
         // ": "
         ret += 2;
         // value
@@ -448,7 +526,21 @@ static int num_strlen(json_data *json) {
 }
 
 static int str_strlen(json_data *json) {
-    return strlen((char *)json->data) + 2;
+    char *s = (char *)json->data;
+    int ret = 0;
+    for (int i = 0; s[i]; i++) {
+        if (s[i] == '\\' ||
+            s[i] == '\n' ||
+            s[i] == '\r' ||
+            s[i] == '\t' ||
+            s[i] == '\b' ||
+            s[i] == '\f' ||
+            s[i] == '"') {
+            ret++;
+        }
+        ret++;
+    }
+    return ret + 2;
 }
 
 static int null_strlen(json_data *json) {
@@ -948,7 +1040,7 @@ static int transit_null_state(char c, int state) {
 // `s` is valid
 static char *decode_string(char *s, int len) {
     int ret_len = 0;
-    for (int i = 0; s[i]; i++) {
+    for (int i = 0; i < len; i++) {
         if (s[i] == '\\') {
             i++;
         }
@@ -993,6 +1085,7 @@ static char *decode_string(char *s, int len) {
                 case 'f':
                 {
                     ret[ret_len++] = '\f';
+                    break;
                 }
                 case '"':
                 {
@@ -1093,6 +1186,10 @@ static json_data *parse_num(char *json_str, int *i) {
         }
 
         else if (state == 4) {
+            if (c < '0' || c > '9') {
+                continue;
+            }
+
             scale *= 10.;
             num += (double)(c - '0') / scale;
         }

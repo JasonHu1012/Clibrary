@@ -11,7 +11,7 @@ CFLAGS = -Wall -I$(INCLUDE)
 AR = ar
 ARFLAGS = rcs
 
-LIBRARYS = list stack deque ndarray vector llist table arg_parser
+LIBRARYS = list stack deque ndarray vector llist table arg_parser json
 
 .PHONY: all test %.test clean
 
@@ -47,6 +47,9 @@ $(BIN)table_test: $(TEST)table_test.c $(LIB)libtable.a | $(BIN)
 $(BIN)arg_parser_test: $(TEST)arg_parser_test.c $(LIB)libarg_parser.a | $(BIN)
 	$(CC) -o $@ $(CFLAGS) $^
 
+$(BIN)json_test: $(TEST)json_test.c $(LIB)libjson.a | $(BIN)
+	$(CC) -o $@ $(CFLAGS) $^
+
 # static library
 $(LIB)liblist.a: $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
@@ -70,6 +73,9 @@ $(LIB)libtable.a: $(OBJ)table.o $(OBJ)llist.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIB)libarg_parser.a: $(OBJ)arg_parser.o $(OBJ)table.o $(OBJ)llist.o | $(LIB)
+	$(AR) $(ARFLAGS) $@ $^
+
+$(LIB)libjson.a: $(OBJ)json.o $(OBJ)table.o $(OBJ)llist.o $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 # object files
