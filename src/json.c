@@ -1239,6 +1239,34 @@ static json_data *parse_str(char *json_str, int *i) {
     return ret;
 }
 
+static void obj_insert(table *tbl, list *keys, char *key, json_data *value) {
+    if (!tbl_contain(tbl, key)) {
+        tbl_set(tbl, key, &value);
+        lst_append(keys, &key);
+        return;
+    }
+
+    // maintain table
+    json_data *old_value;
+    tbl_get(tbl, key, &old_value);
+    json_kill(old_value);
+    tbl_set(tbl, key, &value);
+
+    // maintain list
+    int size = lst_size(keys);
+    for (int i = 0; i < size; i++) {
+        char *old_key;
+        lst_get(keys, i, &old_key);
+
+        if (!strcmp(old_key, key)) {
+            free(old_key);
+            lst_remove(keys, i, NULL);
+            break;
+        }
+    }
+    lst_append(keys, &key);
+}
+
 // `json_str` is valid
 static json_data *parse_obj(char *json_str, int *i) {
     table *tbl = tbl_init(sizeof(json_data *));
@@ -1280,10 +1308,9 @@ static json_data *parse_obj(char *json_str, int *i) {
 
         else if (state == 4) {
             (*i)++;
-            json_data *value_json = parse_general(json_str, i);
+            json_data *value = parse_general(json_str, i);
 
-            tbl_set(tbl, key, &value_json);
-            lst_append(keys, &key);
+            obj_insert(tbl, keys, key, value);
 
             state = 5;
         }
