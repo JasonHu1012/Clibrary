@@ -451,6 +451,125 @@ void func_test12() {
     printf("pass\n");
 }
 
+void func_test13() {
+    printf("json_xxx_init, json_kill... ");
+
+    json_data *obj_json = json_obj_init();
+    json_data *arr_json = json_arr_init();
+    json_data *bool_json = json_bool_init(true);
+    json_data *num_json = json_num_init(123.);
+    json_data *str_json = json_str_init("string");
+    json_data *null_json = json_null_init();
+
+    json_kill(obj_json);
+    json_kill(arr_json);
+    json_kill(bool_json);
+    json_kill(num_json);
+    json_kill(str_json);
+    json_kill(null_json);
+
+    printf("pass\n");
+}
+
+void func_test14() {
+    printf("json_obj_set... ");
+
+    json_data *json = json_obj_init();
+    json_data *value1 = json_num_init(123.);
+    json_data *value2 = json_null_init();
+    json_data *value3 = json_arr_init();
+
+    json_obj_set(json, "key1", value1);
+    json_obj_set(json, "key2", value2);
+    json_obj_set(json, "key2", value3);
+
+    assert(json_obj_size(json) == 2);
+    assert(json_obj_get(json, "key1") == value1);
+    assert(json_obj_get(json, "key2") == value3);
+
+    char **keys = json_obj_keys(json);
+    qsort(keys, 2, sizeof(char *), str_cmp);
+    assert(!strcmp(keys[0], "key1"));
+    assert(!strcmp(keys[1], "key2"));
+
+    json_kill(json);
+    free(keys[0]);
+    free(keys[1]);
+    free(keys);
+
+    printf("pass\n");
+}
+
+void func_test15() {
+    printf("json_obj_remove... ");
+
+    json_data *json = json_obj_init();
+    json_data *value1 = json_num_init(123.);
+    json_data *value2 = json_arr_init();
+
+    json_obj_set(json, "key1", value1);
+    json_obj_set(json, "key2", value2);
+
+    json_obj_remove(json, "key1");
+
+    assert(json_obj_size(json) == 1);
+    assert(json_obj_get(json, "key1") == NULL);
+    assert(json_obj_get(json, "key2") == value2);
+
+    char **keys = json_obj_keys(json);
+    assert(!strcmp(keys[0], "key2"));
+
+    json_kill(json);
+    free(keys[0]);
+    free(keys);
+
+    printf("pass\n");
+}
+
+void func_test16() {
+    printf("json_arr_append, json_arr_set... ");
+
+    json_data *json = json_arr_init();
+    json_data *value1 = json_num_init(123.);
+    json_data *value2 = json_obj_init();
+    json_data *value3 = json_str_init("value");
+
+    json_arr_append(json, value1);
+    json_arr_append(json, value2);
+    json_arr_set(json, 1, value3);
+
+    assert(json_arr_size(json) == 2);
+    assert(json_arr_get(json, 0) == value1);
+    assert(json_arr_get(json, 1) == value3);
+
+    json_kill(json);
+
+    printf("pass\n");
+}
+
+void func_test17() {
+    printf("json_arr_remove... ");
+
+    json_data *json = json_arr_init();
+    json_data *value1 = json_num_init(123.);
+    json_data *value2 = json_obj_init();
+    json_data *value3 = json_str_init("value");
+
+    json_arr_append(json, value1);
+    json_arr_append(json, value2);
+    json_arr_append(json, value3);
+
+    json_arr_remove(json, 1);
+
+    assert(json_arr_size(json) == 2);
+    assert(json_arr_get(json, 0) == value1);
+    assert(json_arr_get(json, 1) == value3);
+
+    json_kill(json);
+
+    printf("pass\n");
+}
+
 int main() {
     printf("=== start json tests ===\n");
 
@@ -466,6 +585,11 @@ int main() {
     func_test10(); 
     func_test11(); 
     func_test12(); 
+    func_test13(); 
+    func_test14(); 
+    func_test15(); 
+    func_test16(); 
+    func_test17(); 
 
     printf("=== pass json tests ===\n");
 

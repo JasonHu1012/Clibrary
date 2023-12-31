@@ -52,6 +52,54 @@ json_data *json_parse(char *json_str) {
     return parse_general(json_str, &i);
 }
 
+json_data *json_obj_init() {
+    obj_data *data = (obj_data *)malloc(sizeof(obj_data));
+    data->data = tbl_init(sizeof(json_data *));
+    data->keys = lst_init(sizeof(char *));
+    json_data *ret = (json_data *)malloc(sizeof(json_data));
+    ret->type = JSON_OBJECT;
+    ret->data = data;
+    return ret;
+}
+
+json_data *json_arr_init() {
+    json_data *ret = (json_data *)malloc(sizeof(json_data));
+    ret->type = JSON_ARRAY;
+    ret->data = lst_init(sizeof(json_data *));
+    return ret;
+}
+
+json_data *json_bool_init(bool value) {
+    json_data *ret = (json_data *)malloc(sizeof(json_data));
+    ret->type = JSON_BOOLEAN;
+    ret->data = malloc(sizeof(bool));
+    *(bool *)ret->data = value;
+    return ret;
+}
+
+json_data *json_num_init(double value) {
+    json_data *ret = (json_data *)malloc(sizeof(json_data));
+    ret->type = JSON_NUMBER;
+    ret->data = malloc(sizeof(double));
+    *(double *)ret->data = value;
+    return ret;
+}
+
+json_data *json_str_init(char *value) {
+    json_data *ret = (json_data *)malloc(sizeof(json_data));
+    ret->type = JSON_STRING;
+    ret->data = malloc(sizeof(char) * (strlen(value) + 1));
+    strcpy((char *)ret->data, value);
+    return ret;
+}
+
+json_data *json_null_init() {
+    json_data *ret = (json_data *)malloc(sizeof(json_data));
+    ret->type = JSON_NULL;
+    ret->data = NULL;
+    return ret;
+}
+
 void json_kill(json_data *json) {
     switch (json->type) {
         case JSON_OBJECT:
@@ -166,6 +214,75 @@ json_data *json_obj_get(json_data *json, char *key) {
     return ret;
 }
 
+// `key` won't be copied
+static void obj_insert(table *tbl, list *keys, char *key, json_data *value) {
+    if (!tbl_contain(tbl, key)) {
+        tbl_set(tbl, key, &value);
+        lst_append(keys, &key);
+        return;
+    }
+
+    // maintain table
+    json_data *old_value;
+    tbl_get(tbl, key, &old_value);
+    json_kill(old_value);
+    tbl_set(tbl, key, &value);
+
+    // maintain list
+    int size = lst_size(keys);
+    for (int i = 0; i < size; i++) {
+        char *old_key;
+        lst_get(keys, i, &old_key);
+
+        if (!strcmp(old_key, key)) {
+            free(old_key);
+            lst_remove(keys, i, NULL);
+            break;
+        }
+    }
+    lst_append(keys, &key);
+}
+
+void json_obj_set(json_data *json, char *key, json_data *value) {
+    assert(json->type == JSON_OBJECT);
+
+    table *tbl = ((obj_data *)json->data)->data;
+    list *keys = ((obj_data *)json->data)->keys;
+
+    char *key_copy = (char *)malloc(sizeof(char) * (strlen(key) + 1));
+    strcpy(key_copy, key);
+
+    obj_insert(tbl, keys, key_copy, value);
+}
+
+void json_obj_remove(json_data *json, char *key) {
+    assert(json->type == JSON_OBJECT);
+
+    table *tbl = ((obj_data *)json->data)->data;
+    list *keys = ((obj_data *)json->data)->keys;
+
+    assert(tbl_contain(tbl, key));
+
+    json_data *value;
+    tbl_get(tbl, key, &value);
+    json_kill(value);
+    tbl_remove(tbl, key);
+
+    int size = lst_size(keys);
+    for (int i = 0; i < size; i++) {
+        char *old_key;
+        lst_get(keys, i, &old_key);
+
+        if (!strcmp(old_key, key)) {
+            free(old_key);
+            lst_remove(keys, i, NULL);
+            return;
+        }
+    }
+
+    assert(0);
+}
+
 int json_arr_size(json_data *json) {
     assert(json->type == JSON_ARRAY);
 
@@ -184,6 +301,40 @@ json_data *json_arr_get(json_data *json, int index) {
     json_data *ret;
     lst_get(lst, index, &ret);
     return ret;
+}
+
+void json_arr_set(json_data *json, int index, json_data *value) {
+    assert(json->type == JSON_ARRAY);
+
+    list *lst = (list *)json->data;
+
+    assert(index >= 0 && index < lst_size(lst));
+
+    json_data *old_value;
+    lst_get(lst, index, &old_value);
+    json_kill(old_value);
+
+    lst_set(lst, index, &value);
+}
+
+void json_arr_append(json_data *json, json_data *value) {
+    assert(json->type == JSON_ARRAY);
+
+    list *lst = (list *)json->data;
+
+    lst_append(lst, &value);
+}
+
+void json_arr_remove(json_data *json, int index) {
+    assert(json->type == JSON_ARRAY);
+
+    list *lst = (list *)json->data;
+
+    assert(index >= 0 && index < lst_size(lst));
+
+    json_data *value;
+    lst_remove(lst, index, &value);
+    json_kill(value);
 }
 
 bool json_bool_get(json_data *json) {
@@ -1237,34 +1388,6 @@ static json_data *parse_str(char *json_str, int *i) {
     ret->type = JSON_STRING;
     ret->data = decode_string(json_str + start, end - start);
     return ret;
-}
-
-static void obj_insert(table *tbl, list *keys, char *key, json_data *value) {
-    if (!tbl_contain(tbl, key)) {
-        tbl_set(tbl, key, &value);
-        lst_append(keys, &key);
-        return;
-    }
-
-    // maintain table
-    json_data *old_value;
-    tbl_get(tbl, key, &old_value);
-    json_kill(old_value);
-    tbl_set(tbl, key, &value);
-
-    // maintain list
-    int size = lst_size(keys);
-    for (int i = 0; i < size; i++) {
-        char *old_key;
-        lst_get(keys, i, &old_key);
-
-        if (!strcmp(old_key, key)) {
-            free(old_key);
-            lst_remove(keys, i, NULL);
-            break;
-        }
-    }
-    lst_append(keys, &key);
 }
 
 // `json_str` is valid
