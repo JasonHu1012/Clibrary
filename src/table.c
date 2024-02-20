@@ -70,6 +70,8 @@ void tbl_kill(table *tbl) {
 }
 
 static int hash(char *key) {
+    const int MOD = 1000000007;
+
     int len = strlen(key);
 
     int ret = 0;
@@ -77,6 +79,11 @@ static int hash(char *key) {
         int cur = 0;
         memcpy(&cur, key + i, len - i < sizeof(int) ? len - i : sizeof(int));
         ret ^= cur;
+    }
+
+    ret %= MOD;
+    if (ret < 0) {
+        ret += MOD;
     }
 
     ret %= ARR_SIZE;
