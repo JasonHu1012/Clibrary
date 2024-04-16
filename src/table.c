@@ -1,16 +1,18 @@
-// there's no resize mechanism in this implementation
-
 #include "table.h"
 #include "llist.h"
+#include "list.h"
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
-#define ARR_SIZE 256
+#define INITIAL_ARR_SIZE 32
+#define INCREASE_SIZE_THRESHOLD 10
 
 struct table {
-    llist *arr[ARR_SIZE];
+    // data
+    list *arr;
+    // indicates who the llist actually belongs to
+    list *belong;
     int size;
     int width;
 };
@@ -39,8 +41,14 @@ table *tbl_init(int width) {
     assert(width > 0);
 
     table *ret = (table *)malloc(sizeof(table));
-    for (int i = 0; i < ARR_SIZE; i++) {
-        ret->arr[i] = llst_init(sizeof(kv_pair *));
+    ret->arr = lst_init(sizeof(llist *));
+    ret->belong = lst_init(sizeof(int));
+    lst_set_size(ret->arr, INITIAL_ARR_SIZE);
+    lst_set_size(ret->belong, INITIAL_ARR_SIZE);
+    for (int i = 0; i < INITIAL_ARR_SIZE; i++) {
+        llist *llst = llst_init(sizeof(kv_pair *));
+        lst_set(ret->arr, i, &llst);
+        lst_set(ret->belong, i, &i);
     }
     ret->size = 0;
     ret->width = width;
@@ -48,8 +56,16 @@ table *tbl_init(int width) {
 }
 
 void tbl_kill(table *tbl) {
-    for (int i = 0; i < ARR_SIZE; i++) {
-        llist *llst = tbl->arr[i];
+    for (int i = 0; i < lst_size(tbl->arr); i++) {
+        int belong;
+        lst_get(tbl->belong, i, &belong);
+        if (i != belong) {
+            // the llist belongs to others, don't kill it
+            continue;
+        }
+
+        llist *llst;
+        lst_get(tbl->arr, i, &llst);
 
         if (!llst_is_empty(llst)) {
             llist_iter *llst_it = llst_it_init(llst, LLST_HEAD);
@@ -66,10 +82,12 @@ void tbl_kill(table *tbl) {
         llst_kill(llst);
     }
 
+    lst_kill(tbl->arr);
+    lst_kill(tbl->belong);
     free(tbl);
 }
 
-static int hash(char *key) {
+static int hash(char *key, int arr_len) {
     const int MOD = 1000000007;
 
     int len = strlen(key);
@@ -86,16 +104,80 @@ static int hash(char *key) {
         ret += MOD;
     }
 
-    ret %= ARR_SIZE;
+    ret %= arr_len;
     if (ret < 0) {
-        ret += ARR_SIZE;
+        ret += arr_len;
     }
-    
+
     return ret;
 }
 
+static void resize(table *tbl, char *key) {
+    // size only increases
+
+    llist *llst;
+    lst_get(tbl->arr, hash(key, lst_size(tbl->arr)), &llst);
+
+    if (llst_size(llst) <= INCREASE_SIZE_THRESHOLD) {
+        return;
+    }
+
+    // clean up the llist
+    int belong;
+    lst_get(tbl->belong, hash(key, lst_size(tbl->arr)), &belong);
+
+    // don't use llist_iter to avoid removing while iterating
+    int size = llst_size(llst);
+    for (int i = 0; i < size; i++) {
+        kv_pair *pair;
+        llst_remove(llst, &pair, LLST_HEAD);
+
+        int index = hash(pair->key, lst_size(tbl->arr));
+        if (index == belong) {
+            // the pair is at the correct llist, put it back
+            llst_append(llst, &pair, LLST_TAIL);
+            continue;
+        }
+
+        int target_belong;
+        lst_get(tbl->belong, index, &target_belong);
+        if (index != target_belong) {
+            // `tbl->arr[index]` points at other's llist
+            // create a new llist for it
+            llist *new_llst = llst_init(sizeof(kv_pair *));
+            lst_set(tbl->arr, index, &new_llst);
+            lst_set(tbl->belong, index, &index);
+        }
+
+        // move the pair to the correct llist
+        llist *target_llst;
+        lst_get(tbl->arr, index, &target_llst);
+        llst_append(target_llst, &pair, LLST_TAIL);
+    }
+
+    if (llst_size(llst) <= INCREASE_SIZE_THRESHOLD) {
+        return;
+    }
+
+    // need to increase size, but clean up next time
+    int old_size = lst_size(tbl->arr);
+    lst_set_size(tbl->arr, old_size * 2);
+    lst_set_size(tbl->belong, old_size * 2);
+    for (int i = old_size; i < old_size * 2; i++) {
+        llist *target_llst;
+        int belong;
+        lst_get(tbl->arr, i - old_size, &target_llst);
+        lst_set(tbl->arr, i, &target_llst);
+        lst_get(tbl->belong, i - old_size, &belong);
+        lst_set(tbl->belong, i, &belong);
+    }
+}
+
 void tbl_get(table *tbl, char *key, void *dst) {
-    llist *llst = tbl->arr[hash(key)];
+    resize(tbl, key);
+
+    llist *llst;
+    lst_get(tbl->arr, hash(key, lst_size(tbl->arr)), &llst);
 
     if (llst_is_empty(llst)) {
         return;
@@ -116,7 +198,10 @@ void tbl_get(table *tbl, char *key, void *dst) {
 }
 
 void tbl_set(table *tbl, char *key, void *src) {
-    llist *llst = tbl->arr[hash(key)];
+    resize(tbl, key);
+
+    llist *llst;
+    lst_get(tbl->arr, hash(key, lst_size(tbl->arr)), &llst);
 
     if (!llst_is_empty(llst)) {
         llist_iter *llst_it = llst_it_init(llst, LLST_HEAD);
@@ -146,7 +231,8 @@ void tbl_set(table *tbl, char *key, void *src) {
 }
 
 bool tbl_contain(table *tbl, char *key) {
-    llist *llst = tbl->arr[hash(key)];
+    llist *llst;
+    lst_get(tbl->arr, hash(key, lst_size(tbl->arr)), &llst);
 
     if (llst_is_empty(llst)) {
         return false;
@@ -170,7 +256,8 @@ bool tbl_contain(table *tbl, char *key) {
 }
 
 void tbl_remove(table *tbl, char *key) {
-    llist *llst = tbl->arr[hash(key)];
+    llist *llst;
+    lst_get(tbl->arr, hash(key, lst_size(tbl->arr)), &llst);
     bool is_found = false;
 
     if (llst_is_empty(llst)) {
@@ -209,8 +296,16 @@ bool tbl_is_empty(table *tbl) {
 char **tbl_keys(table *tbl) {
     char **ret = (char **)malloc(sizeof(char *) * tbl->size);
     int ret_i = 0;
-    for (int i = 0; i < ARR_SIZE; i++) {
-        llist *llst = tbl->arr[i];
+    for (int i = 0; i < lst_size(tbl->arr); i++) {
+        int belong;
+        lst_get(tbl->belong, i, &belong);
+        if (i != belong) {
+            // the llist belongs to others, don't iterate it
+            continue;
+        }
+
+        llist *llst;
+        lst_get(tbl->arr, i, &llst);
 
         if (llst_is_empty(llst)) {
             continue;
@@ -232,4 +327,5 @@ char **tbl_keys(table *tbl) {
     return ret;
 }
 
-#undef ARR_SIZE
+#undef INITIAL_ARR_SIZE
+#undef INCREASE_SIZE_THRESHOLD

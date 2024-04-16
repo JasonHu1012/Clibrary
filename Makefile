@@ -69,10 +69,10 @@ $(LIB)libvector.a: $(OBJ)vector.o | $(LIB)
 $(LIB)libllist.a: $(OBJ)llist.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
-$(LIB)libtable.a: $(OBJ)table.o $(OBJ)llist.o | $(LIB)
+$(LIB)libtable.a: $(OBJ)table.o $(OBJ)llist.o $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
-$(LIB)libarg_parser.a: $(OBJ)arg_parser.o $(OBJ)table.o $(OBJ)llist.o | $(LIB)
+$(LIB)libarg_parser.a: $(OBJ)arg_parser.o $(OBJ)table.o $(OBJ)llist.o $(OBJ)list.o | $(LIB)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIB)libjson.a: $(OBJ)json.o $(OBJ)table.o $(OBJ)llist.o $(OBJ)list.o | $(LIB)
