@@ -6,7 +6,7 @@ LIB = lib/
 BIN = bin/
 
 CC = gcc
-CFLAGS = -Wall -I$(INCLUDE)
+CFLAGS = -Wall -I$(INCLUDE) -g
 
 AR = ar
 ARFLAGS = rcs

@@ -137,6 +137,9 @@ bool llst_is_empty(llist *llst) {
 }
 
 bool llst_it_move(llist_iter *llst_it, llist_way way) {
+    assert(llst_it->cur != llst_it->belong->head);
+    assert(llst_it->cur != llst_it->belong->tail);
+
     if (way == LLST_HEAD) {
         llst_it->cur = llst_it->cur->prev;
 
@@ -164,14 +167,23 @@ void llst_it_move_to(llist_iter *llst_it, llist_way way) {
 }
 
 void llst_it_get(llist_iter *llst_it, void *dst) {
+    assert(llst_it->cur != llst_it->belong->head);
+    assert(llst_it->cur != llst_it->belong->tail);
+
     memcpy(dst, llst_it->cur->data, llst_it->belong->width);
 }
 
 void llst_it_set(llist_iter *llst_it, void *src) {
+    assert(llst_it->cur != llst_it->belong->head);
+    assert(llst_it->cur != llst_it->belong->tail);
+
     memcpy(llst_it->cur->data, src, llst_it->belong->width);
 }
 
 void llst_it_insert(llist_iter *llst_it, void *src, llist_way way) {
+    assert(llst_it->cur != llst_it->belong->head);
+    assert(llst_it->cur != llst_it->belong->tail);
+
     node *new_node = init_node(llst_it->belong->width);
     memcpy(new_node->data, src, llst_it->belong->width);
 
@@ -198,6 +210,8 @@ void llst_it_insert(llist_iter *llst_it, void *src, llist_way way) {
 }
 
 void llst_it_remove(llist_iter *llst_it, void *dst, llist_way way) {
+    assert(llst_it->cur != llst_it->belong->head);
+    assert(llst_it->cur != llst_it->belong->tail);
     assert(llst_it->belong->size > 0);
 
     if (dst) {
