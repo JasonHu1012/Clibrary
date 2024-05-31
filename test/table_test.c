@@ -223,6 +223,8 @@ void time_test1() {
 }
 
 int main() {
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     printf("=== start table tests ===\n");
 
     func_test1();

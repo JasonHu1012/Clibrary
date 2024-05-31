@@ -293,6 +293,8 @@ void time_test2() {
 }
 
 int main() {
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     printf("=== start llist tests ===\n");
 
     func_test1();

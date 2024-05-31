@@ -318,6 +318,8 @@ void time_test4() {
 }
 
 int main() {
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     printf("=== start deque tests ===\n");
 
     func_test1();

@@ -571,6 +571,8 @@ void func_test17() {
 }
 
 int main() {
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     printf("=== start json tests ===\n");
 
     func_test1(); 

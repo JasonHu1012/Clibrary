@@ -86,6 +86,8 @@ void time_test1() {
 }
 
 int main() {
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     printf("=== start ndarray tests ===\n");
 
     func_test1();

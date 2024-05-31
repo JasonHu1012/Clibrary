@@ -308,6 +308,8 @@ void func_test9() {
 }
 
 int main() {
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     printf("=== start arg_parser tests ===\n"); 
 
     argv = (char **)malloc(sizeof(char *) * MAX_ARGC);
