@@ -25,24 +25,6 @@ void func_test1() {
 
 void func_test2() {
     int dim = 100;
-    int min = -1.;
-    int max = 1.;
-
-    printf("vec_rand... ");
-
-    vector *vec = vec_rand(dim, min, max);
-    assert(vec_dim(vec) == dim);
-    for (int i = 0; i < dim; i++) {
-        assert(*vec_entry(vec, i) >= min && *vec_entry(vec, i) <= max);
-    }
-
-    vec_kill(vec);
-
-    printf("pass\n");
-}
-
-void func_test3() {
-    int dim = 100;
 
     printf("vec_arr... ");
 
@@ -63,7 +45,7 @@ void func_test3() {
     printf("pass\n");
 }
 
-void func_test4() {
+void func_test3() {
     int dim = 100;
 
     printf("vec_entry... ");
@@ -82,7 +64,7 @@ void func_test4() {
     printf("pass\n");
 }
 
-void func_test5() {
+void func_test4() {
     printf("vec_len... ");
 
     vector *vec = vec_arr(3, (double[]){ 1.5, 2.5, 3.5 });
@@ -94,55 +76,7 @@ void func_test5() {
     printf("pass\n");
 }
 
-void func_test6() {
-    int dim = 100;
-
-    printf("vec_add `dst` can be input arguments... ");
-
-    vector *vec = vec_zero(dim);
-    for (int i = 0; i < dim; i++) {
-        *vec_entry(vec, i) = (double)i;
-    }
-
-    vec_add(vec, vec, vec);
-    assert(vec_dim(vec) == dim);
-    for (int i = 0; i < dim; i++) {
-        assert(fabs(*vec_entry(vec, i) - (double)i * 2.) < EPSILON);
-    }
-
-    vec_kill(vec);
-
-    printf("pass\n");
-}
-
-void func_test7() {
-    int dim = 100;
-
-    printf("vec_minus `dst` can be input arguments... ");
-
-    vector *vec1 = vec_zero(dim);
-    for (int i = 0; i < dim; i++) {
-        *vec_entry(vec1, i) = (double)i;
-    }
-    vector *vec2 = vec_zero(dim);
-    for (int i = 0; i < dim; i++) {
-        *vec_entry(vec2, i) = (double)i * 2.;
-    }
-
-    vec_minus(vec1, vec2, vec1);
-    assert(vec_dim(vec1) == dim);
-    assert(vec_dim(vec2) == dim);
-    for (int i = 0; i < dim; i++) {
-        assert(*vec_entry(vec1, i) == (double)i * -1.);
-    }
-
-    vec_kill(vec1);
-    vec_kill(vec2);
-
-    printf("pass\n");
-}
-
-void func_test8() {
+void func_test5() {
     printf("vec_dot... ");
 
     vector *vec1 = vec_arr(3, (double[]){ 1.5, 2.5, 3.5 });
@@ -156,86 +90,212 @@ void func_test8() {
     printf("pass\n");
 }
 
-void func_test9() {
+void func_test6() {
+    int dim = 100;
+
+    printf("vec_add... ");
+
+    vector *vec1 = vec_zero(dim);
+    vector *vec2 = vec_zero(dim);
+    vector *vec3 = vec_zero(dim);
+    for (int i = 0; i < dim; i++) {
+        *vec_entry(vec1, i) = (double)i;
+        *vec_entry(vec2, i) = (double)i * 2.;
+    }
+
+    assert(vec_add(vec1, vec2, vec3) == vec3);
+    assert(vec_dim(vec3) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(fabs(*vec_entry(vec3, i) - (double)i * 3.) < EPSILON);
+    }
+
+    vector *vec4 = vec_add(vec1, vec2, NULL);
+    assert(vec_dim(vec4) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(fabs(*vec_entry(vec4, i) - (double)i * 3.) < EPSILON);
+    }
+
+    assert(vec_add(vec1, vec2, vec1) == vec1);
+    assert(vec_dim(vec1) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(fabs(*vec_entry(vec1, i) - (double)i * 3.) < EPSILON);
+    }
+
+    vec_kill(vec1);
+    vec_kill(vec2);
+    vec_kill(vec3);
+    vec_kill(vec4);
+
+    printf("pass\n");
+}
+
+void func_test7() {
+    int dim = 100;
+
+    printf("vec_minus... ");
+
+    vector *vec1 = vec_zero(dim);
+    vector *vec2 = vec_zero(dim);
+    vector *vec3 = vec_zero(dim);
+    for (int i = 0; i < dim; i++) {
+        *vec_entry(vec1, i) = (double)i * 2.;
+        *vec_entry(vec2, i) = (double)i;
+    }
+
+    assert(vec_minus(vec1, vec2, vec3) == vec3);
+    assert(vec_dim(vec3) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(fabs(*vec_entry(vec3, i) - (double)i) < EPSILON);
+    }
+
+    vector *vec4 = vec_minus(vec1, vec2, NULL);
+    assert(vec_dim(vec4) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(fabs(*vec_entry(vec4, i) - (double)i) < EPSILON);
+    }
+
+    assert(vec_minus(vec1, vec2, vec1) == vec1);
+    assert(vec_dim(vec1) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(fabs(*vec_entry(vec1, i) - (double)i) < EPSILON);
+    }
+
+    vec_kill(vec1);
+    vec_kill(vec2);
+    vec_kill(vec3);
+    vec_kill(vec4);
+
+    printf("pass\n");
+}
+
+void func_test8() {
     int dim = 100;
     double mul = 10.;
 
-    printf("vec_mul `dst` can be input arguments... ");
+    printf("vec_mul... ");
 
-    vector *vec = vec_zero(dim);
+    vector *vec1 = vec_zero(dim);
+    vector *vec2 = vec_zero(dim);
     for (int i = 0; i < dim; i++) {
-        *vec_entry(vec, i) = (double)i;
+        *vec_entry(vec1, i) = (double)i;
     }
 
-    vec_mul(vec, mul, vec);
-    assert(vec_dim(vec) == dim);
+    assert(vec_mul(vec1, mul, vec2) == vec2);
+    assert(vec_dim(vec2) == dim);
     for (int i = 0; i < dim; i++) {
-        assert(*vec_entry(vec, i) == (double)i * mul);
+        assert(*vec_entry(vec2, i) == (double)i * mul);
     }
 
-    vec_kill(vec);
+    vector *vec3 = vec_mul(vec1, mul, NULL);
+    assert(vec_dim(vec3) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(*vec_entry(vec3, i) == (double)i * mul);
+    }
+
+    assert(vec_mul(vec1, mul, vec1) == vec1);
+    assert(vec_dim(vec1) == dim);
+    for (int i = 0; i < dim; i++) {
+        assert(*vec_entry(vec1, i) == (double)i * mul);
+    }
+
+    vec_kill(vec1);
+    vec_kill(vec2);
+    vec_kill(vec3);
+
+    printf("pass\n");
+}
+
+void func_test9() {
+    printf("vec_unit... ");
+
+    vector *vec1 = vec_arr(3, (double[]){ 3., 4., 12. });
+    vector *vec2 = vec_zero(3);
+
+    assert(vec_unit(vec1, vec2) == vec2);
+    assert(vec_dim(vec2) == 3);
+    assert(fabs(vec_len(vec2) - 1.) < EPSILON);
+    assert(fabs(*vec_entry(vec2, 0) - 3. / 13.) < EPSILON);
+    assert(fabs(*vec_entry(vec2, 1) - 4. / 13.) < EPSILON);
+    assert(fabs(*vec_entry(vec2, 2) - 12. / 13.) < EPSILON);
+
+    vector *vec3 = vec_unit(vec1, NULL);
+    assert(vec_dim(vec3) == 3);
+    assert(fabs(vec_len(vec3) - 1.) < EPSILON);
+    assert(fabs(*vec_entry(vec3, 0) - 3. / 13.) < EPSILON);
+    assert(fabs(*vec_entry(vec3, 1) - 4. / 13.) < EPSILON);
+    assert(fabs(*vec_entry(vec3, 2) - 12. / 13.) < EPSILON);
+
+    assert(vec_unit(vec1, vec1) == vec1);
+    assert(vec_dim(vec1) == 3);
+    assert(fabs(vec_len(vec1) - 1.) < EPSILON);
+    assert(fabs(*vec_entry(vec1, 0) - 3. / 13.) < EPSILON);
+    assert(fabs(*vec_entry(vec1, 1) - 4. / 13.) < EPSILON);
+    assert(fabs(*vec_entry(vec1, 2) - 12. / 13.) < EPSILON);
+
+    vec_kill(vec1);
+    vec_kill(vec2);
+    vec_kill(vec3);
 
     printf("pass\n");
 }
 
 void func_test10() {
-    printf("vec_unit `dst` can be input arguments... ");
+    printf("vec_proj... ");
 
-    vector *vec = vec_arr(3, (double[]){ 3., 4., 12. });
+    vector *vec1 = vec_arr(3, (double[]){ 2., 4., 2. });
+    vector *vec2 = vec_arr(3, (double[]){ 0., 3., 4. });
+    vector *vec3 = vec_zero(3);
 
-    vec_unit(vec, vec);
-    assert(vec_dim(vec) == 3);
-    assert(fabs(vec_len(vec) - 1.) < EPSILON);
-    assert(fabs(*vec_entry(vec, 0) - 3. / 13.) < EPSILON);
-    assert(fabs(*vec_entry(vec, 1) - 4. / 13.) < EPSILON);
-    assert(fabs(*vec_entry(vec, 2) - 12. / 13.) < EPSILON);
+    assert(vec_proj(vec1, vec2, vec3) == vec3);
+    assert(vec_dim(vec3) == 3);
+    assert(fabs(*vec_entry(vec3, 0) - 0.) < EPSILON);
+    assert(fabs(*vec_entry(vec3, 1) - 2.4) < EPSILON);
+    assert(fabs(*vec_entry(vec3, 2) - 3.2) < EPSILON);
 
-    vec_kill(vec);
+    vector *vec4 = vec_proj(vec1, vec2, NULL);
+    assert(vec_dim(vec4) == 3);
+    assert(fabs(*vec_entry(vec4, 0) - 0.) < EPSILON);
+    assert(fabs(*vec_entry(vec4, 1) - 2.4) < EPSILON);
+    assert(fabs(*vec_entry(vec4, 2) - 3.2) < EPSILON);
+
+    assert(vec_proj(vec1, vec2, vec1) == vec1);
+    assert(vec_dim(vec1) == 3);
+    assert(fabs(*vec_entry(vec1, 0) - 0.) < EPSILON);
+    assert(fabs(*vec_entry(vec1, 1) - 2.4) < EPSILON);
+    assert(fabs(*vec_entry(vec1, 2) - 3.2) < EPSILON);
+
+    vec_kill(vec1);
+    vec_kill(vec2);
+    vec_kill(vec3);
+    vec_kill(vec4);
 
     printf("pass\n");
 }
 
-void func_test11() {
-    printf("vec_proj `dst` can be input arguments... ");
-
-    vector *vec1 = vec_arr(3, (double[]){ 2., 4., 2. });
-    vector *vec2 = vec_arr(3, (double[]){ 0., 3., 4. });
-
-    vec_proj(vec1, vec2, vec1);
-    assert(vec_dim(vec1) == 3);
-    assert(vec_dim(vec2) == 3);
-    assert(fabs(*vec_entry(vec1, 0) - 0.) < EPSILON);
-    assert(fabs(*vec_entry(vec1, 1) - 2.4) < EPSILON);
-    assert(fabs(*vec_entry(vec1, 2) - 3.2) < EPSILON);
-    assert(*vec_entry(vec2, 0) == 0.);
-    assert(*vec_entry(vec2, 1) == 3.);
-    assert(*vec_entry(vec2, 2) == 4.);
-
-    vec_kill(vec1);
-    vec_kill(vec2);
-
-    printf("pass\n");
+static double double_rand(double min, double max) {
+    return (double)rand() / RAND_MAX * (max - min) + min;
 }
 
 void time_test1() {
     int T = 1000000;
     int dim = 100;
-    int min = -1e8;
-    int max = 1e8;
+    double min = -1e8;
+    double max = 1e8;
 
     printf("%d vec_add with dimension %d... ", T, dim);
 
     vector **vec1s = (vector **)malloc(sizeof(vector *) * T);
-    for (int i = 0; i < T; i++) {
-        vec1s[i] = vec_rand(dim, min, max);
-    }
     vector **vec2s = (vector **)malloc(sizeof(vector *) * T);
-    for (int i = 0; i < T; i++) {
-        vec2s[i] = vec_rand(dim, min, max);
-    }
     vector **dsts = (vector **)malloc(sizeof(vector *) * T);
     for (int i = 0; i < T; i++) {
-        dsts[i] = vec_rand(dim, min, max);
+        vec1s[i] = vec_zero(dim);
+        vec2s[i] = vec_zero(dim);
+        dsts[i] = vec_zero(dim);
+        for (int j = 0; j < dim; j++) {
+            *vec_entry(vec1s[i], j) = double_rand(min, max);
+            *vec_entry(vec2s[i], j) = double_rand(min, max);
+            *vec_entry(dsts[i], j) = double_rand(min, max);
+        }
     }
 
     clock_t start = clock();
@@ -260,18 +320,20 @@ void time_test1() {
 void time_test2() {
     int T = 1000000;
     int dim = 100;
-    int min = -1e8;
-    int max = 1e8;
+    double min = -1e8;
+    double max = 1e8;
 
     printf("%d vec_dot with dimension %d... ", T, dim);
 
     vector **vec1s = (vector **)malloc(sizeof(vector *) * T);
-    for (int i = 0; i < T; i++) {
-        vec1s[i] = vec_rand(dim, min, max);
-    }
     vector **vec2s = (vector **)malloc(sizeof(vector *) * T);
     for (int i = 0; i < T; i++) {
-        vec2s[i] = vec_rand(dim, min, max);
+        vec1s[i] = vec_zero(dim);
+        vec2s[i] = vec_zero(dim);
+        for (int j = 0; j < dim; j++) {
+            *vec_entry(vec1s[i], j) = double_rand(min, max);
+            *vec_entry(vec2s[i], j) = double_rand(min, max);
+        }
     }
 
     clock_t start = clock();
@@ -306,7 +368,6 @@ int main() {
     func_test8();
     func_test9();
     func_test10();
-    func_test11();
 
     time_test1();
     time_test2();

@@ -4,16 +4,13 @@
 typedef struct vector vector;
 
 // for all functions that generate results to `dst`, `dst` can be one of input arguments
-// `dst` should have been initialized, and its dimension should be correct
+// `dst` could be initialized vector with correct dimension, and the functions will return it
+// `dst` could be NULL, and the functions will initialize a new vector and return it
 
 // initialize a zero vector with dimension `dim`
 vector *vec_zero(int dim);
 
-// initialize a vector with dimension `dim`
-// each entry is randomly generated from [`min`, `max`]
-vector *vec_rand(int dim, double min, double max);
-
-// initialize a vector with dimension `dim` whose entries are equal to `arr`
+// initialize a vector from `arr` with dimension `dim`
 vector *vec_arr(int dim, double *arr);
 
 // kill `vec`
@@ -28,22 +25,22 @@ double vec_len(vector *vec);
 // return the dimension of `vec`
 int vec_dim(vector *vec);
 
-// let `dst` = `vec1` + `vec2`
-void vec_add(vector *vec1, vector *vec2, vector *dst);
-
-// let `dst` = `vec1` - `vec2`
-void vec_minus(vector *vec1, vector *vec2, vector *dst);
-
 // return the inner product of `vec1` and `vec2`
 double vec_dot(vector *vec1, vector *vec2);
 
-// let `dst` be `mul` * `vec`
-void vec_mul(vector *vec, double mul, vector *dst);
+// let `dst` be `vec1` added by `vec2`
+vector *vec_add(vector *vec1, vector *vec2, vector *dst);
+
+// let `dst` be `vec1` subtracted by `vec2`
+vector *vec_minus(vector *vec1, vector *vec2, vector *dst);
+
+// let `dst` be `vec` multiplied by `mul`
+vector *vec_mul(vector *vec, double mul, vector *dst);
 
 // let `dst` be the unit vector of `vec`
-void vec_unit(vector *vec, vector *dst);
+vector *vec_unit(vector *vec, vector *dst);
 
 // let `dst` be the projection of `vec1` onto `vec2`
-void vec_proj(vector *vec1, vector *vec2, vector *dst);
+vector *vec_proj(vector *vec1, vector *vec2, vector *dst);
 
 #endif

@@ -18,23 +18,6 @@ vector *vec_zero(int dim) {
     return ret;
 }
 
-static double double_rand(double min, double max) {
-    return (double)rand() / RAND_MAX * (max - min) + min;
-}
-
-vector *vec_rand(int dim, double min, double max) {
-    assert(dim > 0);
-    assert(max >= min);
-
-    vector *ret = (vector *)malloc(sizeof(vector));
-    ret->entry = (double *)malloc(sizeof(double) * dim);
-    for (int i = 0; i < dim; i++) {
-        ret->entry[i] = double_rand(min, max);
-    }
-    ret->dim = dim;
-    return ret;
-}
-
 vector *vec_arr(int dim, double *arr) {
     assert(dim > 0);
 
@@ -68,24 +51,6 @@ int vec_dim(vector *vec) {
     return vec->dim;
 }
 
-void vec_add(vector *vec1, vector *vec2, vector *dst) {
-    assert(vec1->dim == vec2->dim);
-    assert(vec1->dim == dst->dim);
-
-    for (int i = 0; i < vec1->dim; i++) {
-        dst->entry[i] = vec1->entry[i] + vec2->entry[i];
-    }
-}
-
-void vec_minus(vector *vec1, vector *vec2, vector *dst) {
-    assert(vec1->dim == vec2->dim);
-    assert(vec1->dim == dst->dim);
-
-    for (int i = 0; i < vec1->dim; i++) {
-        dst->entry[i] = vec1->entry[i] - vec2->entry[i];
-    }
-}
-
 double vec_dot(vector *vec1, vector *vec2) {
     assert(vec1->dim == vec2->dim);
 
@@ -96,27 +61,79 @@ double vec_dot(vector *vec1, vector *vec2) {
     return ret;
 }
 
-void vec_mul(vector *vec, double mul, vector *dst) {
-    assert(vec->dim == dst->dim);
+vector *vec_add(vector *vec1, vector *vec2, vector *dst) {
+    assert(vec1->dim == vec2->dim);
+    if (dst) {
+        assert(vec1->dim == dst->dim);
+    }
+
+    if (!dst) {
+        dst = vec_zero(vec1->dim);
+    }
+
+    for (int i = 0; i < vec1->dim; i++) {
+        dst->entry[i] = vec1->entry[i] + vec2->entry[i];
+    }
+    return dst;
+}
+
+vector *vec_minus(vector *vec1, vector *vec2, vector *dst) {
+    assert(vec1->dim == vec2->dim);
+    if (dst) {
+        assert(vec1->dim == dst->dim);
+    }
+
+    if (!dst) {
+        dst = vec_zero(vec1->dim);
+    }
+
+    for (int i = 0; i < vec1->dim; i++) {
+        dst->entry[i] = vec1->entry[i] - vec2->entry[i];
+    }
+    return dst;
+}
+
+vector *vec_mul(vector *vec, double mul, vector *dst) {
+    if (dst) {
+        assert(vec->dim == dst->dim);
+    }
+
+    if (!dst) {
+        dst = vec_zero(vec->dim);
+    }
 
     for (int i = 0; i < vec->dim; i++) {
         dst->entry[i] = vec->entry[i] * mul;
     }
+    return dst;
 }
 
-void vec_unit(vector *vec, vector *dst) {
-    assert(vec->dim == dst->dim);
+vector *vec_unit(vector *vec, vector *dst) {
+    if (dst) {
+        assert(vec->dim == dst->dim);
+    }
+
+    if (!dst) {
+        dst = vec_zero(vec->dim);
+    }
 
     int len = vec_len(vec);
     for (int i = 0; i < vec->dim; i++) {
         dst->entry[i] = vec->entry[i] / len;
     }
+    return dst;
 }
 
-void vec_proj(vector *vec1, vector *vec2, vector *dst) {
+vector *vec_proj(vector *vec1, vector *vec2, vector *dst) {
     assert(vec1->dim == vec2->dim);
-    assert(vec1->dim == dst->dim);
+    if (dst) {
+        assert(vec1->dim == dst->dim);
+    }
+
+    if (!dst) {
+        dst = vec_zero(vec1->dim);
+    }
 
     int vec2_len = vec_len(vec2);
-    vec_mul(vec2, vec_dot(vec1, vec2) / (vec2_len * vec2_len), dst);
+    return vec_mul(vec2, vec_dot(vec1, vec2) / (vec2_len * vec2_len), dst);
 }
