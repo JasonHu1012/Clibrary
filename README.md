@@ -1,6 +1,6 @@
 # Clibrary
 
-This is a library containing various sublibraries for C, ranging from basic data structures to high-level applications.
+This is a library containing various sublibraries for C, ranging from basic data structures to high-level utilities.
 
 # Directory Layout
 
