@@ -1,8 +1,8 @@
-# Clibrary
+## Clibrary
 
 This is a library containing various sublibraries for C, ranging from basic data structures to high-level utilities.
 
-# Directory Layout
+## Directory Layout
 
 - include: header files
 - lib: static libraries
@@ -11,7 +11,7 @@ This is a library containing various sublibraries for C, ranging from basic data
 - obj: object files
 - bin: test programs
 
-# Usage
+## Usage
 
 ### Compile
 
