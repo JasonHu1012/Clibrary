@@ -197,6 +197,8 @@ static void print_help(table *tbl, char *name, FILE *file) {
         free(keys[i]);
     }
 
+    fprintf(file, "  -h/--help: print this description\n");
+
     free(keys);
 }
 
