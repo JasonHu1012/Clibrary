@@ -67,17 +67,16 @@ bool deq_is_empty(deque *deq) {
 }
 
 void deq_push_head(deque *deq, void *src) {
-    if (deq->start == 0) {
+    if (deq->start-- == 0) {
         node *old_head = deq->head;
         deq->head = init_node(deq->width);
 
         deq->head->next = old_head;
         old_head->prev = deq->head;
 
-        deq->start = SINGLE_NODE_SIZE;
+        deq->start = SINGLE_NODE_SIZE - 1;
     }
 
-    deq->start--;
     memcpy((char *)deq->head->data + deq->width * deq->start, src, deq->width);
 
     deq->size++;
@@ -90,7 +89,7 @@ void deq_pop_head(deque *deq, void *dst) {
         memcpy(dst, (char *)deq->head->data + deq->width * deq->start, deq->width);
     }
 
-    if (++deq->start == SINGLE_NODE_SIZE) {
+    if (deq->start++ == SINGLE_NODE_SIZE - 1) {
         node *old_head = deq->head;
         deq->head = deq->head->next;
         deq->head->prev = NULL;
@@ -103,7 +102,9 @@ void deq_pop_head(deque *deq, void *dst) {
 }
 
 void deq_push_tail(deque *deq, void *src) {
-    if (deq->end == SINGLE_NODE_SIZE) {
+    memcpy((char *)deq->tail->data + deq->width * deq->end, src, deq->width);
+
+    if (deq->end++ == SINGLE_NODE_SIZE - 1) {
         node *old_tail = deq->tail;
         deq->tail = init_node(deq->width);
 
@@ -112,9 +113,6 @@ void deq_push_tail(deque *deq, void *src) {
 
         deq->end = 0;
     }
-
-    memcpy((char *)deq->tail->data + deq->width * deq->end, src, deq->width);
-    deq->end++;
 
     deq->size++;
 }
@@ -139,10 +137,14 @@ void deq_pop_tail(deque *deq, void *dst) {
 }
 
 void deq_head(deque *deq, void *dst) {
+    assert(deq->size > 0);
+
     memcpy(dst, (char *)deq->head->data + deq->width * deq->start, deq->width);
 }
 
 void deq_tail(deque *deq, void *dst) {
+    assert(deq->size > 0);
+
     memcpy(
         dst,
         deq->end == 0 ?
