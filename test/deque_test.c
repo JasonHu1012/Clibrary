@@ -15,6 +15,24 @@ void func_test1() {
 }
 
 void func_test2() {
+    int T = 10000;
+
+    printf("deq_kill_f... ");
+
+    // deque of int *
+    deque *deq = deq_init(sizeof(int *));
+    for (int i = 0; i < T; i++) {
+        int *p = (int *)malloc(sizeof(int));
+        deq_push_head(deq, &p);
+        p = (int *)malloc(sizeof(int));
+        deq_push_tail(deq, &p);
+    }
+    deq_kill_f(deq, free);
+
+    printf("pass\n");
+}
+
+void func_test3() {
     int size = 100;
 
     printf("deq_size, deq_is_empty... ");
@@ -39,7 +57,7 @@ void func_test2() {
     printf("pass\n");
 }
 
-void func_test3() {
+void func_test4() {
     int T = 10000;
 
     printf("deq_push_head, deq_pop_tail... ");
@@ -64,7 +82,7 @@ void func_test3() {
     printf("pass\n");
 }
 
-void func_test4() {
+void func_test5() {
     int T = 10000;
 
     printf("deq_push_tail, deq_pop_head... ");
@@ -89,7 +107,7 @@ void func_test4() {
     printf("pass\n");
 }
 
-void func_test5() {
+void func_test6() {
     int T = 10000;
 
     printf("deq_push_head, deq_pop_head... ");
@@ -114,7 +132,7 @@ void func_test5() {
     printf("pass\n");
 }
 
-void func_test6() {
+void func_test7() {
     int T = 10000;
 
     printf("deq_push_tail, deq_pop_tail... ");
@@ -139,7 +157,7 @@ void func_test6() {
     printf("pass\n");
 }
 
-void func_test7() {
+void func_test8() {
     int value = 100;
 
     printf("deq_head... ");
@@ -157,7 +175,7 @@ void func_test7() {
     printf("pass\n");
 }
 
-void func_test8() {
+void func_test9() {
     int value = 100;
 
     printf("deq_tail... ");
@@ -175,7 +193,7 @@ void func_test8() {
     printf("pass\n");
 }
 
-void func_test9() {
+void func_test10() {
     printf("deq_pop_head `dst` can be NULL... ");
 
     deque *deq = deq_init(sizeof(int));
@@ -190,7 +208,7 @@ void func_test9() {
     printf("pass\n");
 }
 
-void func_test10() {
+void func_test11() {
     printf("deq_pop_tail `dst` can be NULL... ");
 
     deque *deq = deq_init(sizeof(int));
@@ -332,6 +350,7 @@ int main() {
     func_test8();
     func_test9();
     func_test10();
+    func_test11();
 
     time_test1();
     time_test2();

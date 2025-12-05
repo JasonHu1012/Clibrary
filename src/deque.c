@@ -48,7 +48,8 @@ deque *deq_init(int width) {
     return ret;
 }
 
-void deq_kill(deque *deq) {
+void deq_kill(void *ptr) {
+    deque *deq = ptr;
     while (deq->head) {
         node *old_head = deq->head;
         deq->head = deq->head->next;
@@ -56,6 +57,31 @@ void deq_kill(deque *deq) {
         kill_node(old_head);
     }
     free(deq);
+}
+
+void deq_kill_f(deque *deq, void (*kill)(void *ptr)) {
+    if (deq->head != deq->tail) {
+        node *cur = deq->head->next;
+        while (cur != deq->tail) {
+            for (int i = 0; i < SINGLE_NODE_SIZE; i++) {
+                kill(((void **)cur->data)[i]);
+            }
+            cur = cur->next;
+        }
+
+        for (int i = deq->start; i < SINGLE_NODE_SIZE; i++) {
+            kill(((void **)deq->head->data)[i]);
+        }
+        for (int i = 0; i < deq->end; i++) {
+            kill(((void **)deq->tail->data)[i]);
+        }
+    }
+    else {
+        for (int i = deq->start; i < deq->end; i++) {
+            kill(((void **)deq->head->data)[i]);
+        }
+    }
+    deq_kill(deq);
 }
 
 int deq_size(deque *deq) {
