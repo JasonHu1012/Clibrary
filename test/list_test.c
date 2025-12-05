@@ -14,7 +14,48 @@ void func_test1() {
     printf("pass\n");
 }
 
+void my_kill(void *lst) {
+    lst_kill_f(lst, free);
+}
+
 void func_test2() {
+    int size = 10;
+
+    printf("lst_kill_f... ");
+
+    // list of int *
+    list *lst = lst_init(sizeof(int *));
+    for (int i = 0; i < size; i++) {
+        int *p = (int *)malloc(sizeof(int) * size);
+        lst_append(lst, &p);
+    }
+    lst_kill_f(lst, free);
+
+    // list of list of int
+    lst = lst_init(sizeof(list *));
+    for (int i = 0; i < size; i++) {
+        list *inner = lst_init(sizeof(int));
+        lst_set_size(inner, size);
+        lst_append(lst, &inner);
+    }
+    lst_kill_f(lst, lst_kill);
+
+    // list of list of int *
+    lst = lst_init(sizeof(list *));
+    for (int i = 0; i < size; i++) {
+        list *inner = lst_init(sizeof(int *));
+        for (int j = 0; j < size; j++) {
+            int *p = (int *)malloc(sizeof(int) * size);
+            lst_append(inner, &p);
+        }
+        lst_append(lst, &inner);
+    }
+    lst_kill_f(lst, my_kill);
+
+    printf("pass\n");
+}
+
+void func_test3() {
     int size = 1000;
 
     printf("lst_set_size, lst_size... ");
@@ -29,7 +70,7 @@ void func_test2() {
     printf("pass\n");
 }
 
-void func_test3() {
+void func_test4() {
     printf("lst_is_empty... ");
 
     list *lst = lst_init(sizeof(int));
@@ -42,7 +83,7 @@ void func_test3() {
     printf("pass\n");
 }
 
-void func_test4() {
+void func_test5() {
     int size = 1000;
 
     printf("lst_get, lst_set... ");
@@ -66,7 +107,7 @@ void func_test4() {
     printf("pass\n");
 }
 
-void func_test5() {
+void func_test6() {
     int size = 1000;
 
     printf("lst_append, lst_pop... ");
@@ -91,7 +132,7 @@ void func_test5() {
     printf("pass\n");
 }
 
-void func_test6() {
+void func_test7() {
     printf("lst_pop `dst` can be NULL... ");
 
     list *lst = lst_init(sizeof(int));
@@ -105,7 +146,7 @@ void func_test6() {
     printf("pass\n");
 }
 
-void func_test7() {
+void func_test8() {
     int size = 100;
     int T = 1000;
     int index = 50;
@@ -133,7 +174,7 @@ void func_test7() {
     printf("pass\n");
 }
 
-void func_test8() {
+void func_test9() {
     int size = 100;
     int index = 50;
 
@@ -149,7 +190,7 @@ void func_test8() {
     printf("pass\n");
 }
 
-void func_test9() {
+void func_test10() {
     int size = 100;
 
     printf("lst_contain... ");
@@ -179,7 +220,7 @@ void func_test9() {
     printf("pass\n");
 }
 
-void func_test10() {
+void func_test11() {
     int size = 100;
     int target1 = 10;
     int target2 = 20;
@@ -271,6 +312,7 @@ int main() {
     func_test8();
     func_test9();
     func_test10();
+    func_test11();
 
     time_test1();
 

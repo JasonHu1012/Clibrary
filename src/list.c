@@ -24,9 +24,17 @@ list *lst_init(int width) {
     return ret;
 }
 
-void lst_kill(list *lst) {
+void lst_kill(void *ptr) {
+    list *lst = (list *)ptr;
     free(lst->data);
     free(lst);
+}
+
+void lst_kill_f(list *lst, void (*kill)(void *ptr)) {
+    for (int i = 0; i < lst->size; i++) {
+        kill(((void **)lst->data)[i]);
+    }
+    lst_kill(lst);
 }
 
 static void increase_real_size(list *lst) {
