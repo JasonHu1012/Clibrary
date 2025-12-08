@@ -15,8 +15,14 @@ stack *stk_init(int width) {
     return ret;
 }
 
-void stk_kill(stack *stk) {
+void stk_kill(void *ptr) {
+    stack *stk = (stack *)ptr;
     lst_kill(stk->lst);
+    free(stk);
+}
+
+void stk_kill_f(stack *stk, void (*kill)(void *ptr)) {
+    lst_kill_f(stk->lst, kill);
     free(stk);
 }
 

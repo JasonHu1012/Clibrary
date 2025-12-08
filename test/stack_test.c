@@ -15,7 +15,24 @@ void func_test1() {
 }
 
 void func_test2() {
+    int T = 100;
+
+    printf("stk_kill_f... ");
+
+    // stack of int *
+    stack *stk = stk_init(sizeof(int *));
+    for (int i = 0; i < T; i++) {
+        int *p = (int *)malloc(sizeof(int));
+        stk_push(stk, &p);
+    }
+    stk_kill_f(stk, free);
+
+    printf("pass\n");
+}
+
+void func_test3() {
     int size = 100;
+
     printf("stk_size, stk_is_empty... ");
 
     stack *stk = stk_init(sizeof(int));
@@ -38,8 +55,9 @@ void func_test2() {
     printf("pass\n");
 }
 
-void func_test3() {
+void func_test4() {
     int T = 1000;
+
     printf("stk_push, stk_pop... ");
 
     stack *stk = stk_init(sizeof(int));
@@ -62,8 +80,9 @@ void func_test3() {
     printf("pass\n");
 }
 
-void func_test4() {
+void func_test5() {
     int value = 100;
+
     printf("stk_top... ");
 
     stack *stk = stk_init(sizeof(int));
@@ -80,7 +99,7 @@ void func_test4() {
     printf("pass\n");
 }
 
-void func_test5() {
+void func_test6() {
     printf("stk_pop `dst` can be NULL... ");
 
     stack *stk = stk_init(sizeof(int));
@@ -133,6 +152,7 @@ int main() {
     func_test3();
     func_test4();
     func_test5();
+    func_test6();
 
     time_test1();
 
