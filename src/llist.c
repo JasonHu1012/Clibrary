@@ -48,7 +48,8 @@ llist *llst_init(int width) {
     return ret;
 }
 
-void llst_kill(llist *llst) {
+void llst_kill(void *ptr) {
+    llist *llst = (llist *)ptr;
     while (llst->head) {
         node *old_head = llst->head;
         llst->head = llst->head->next;
@@ -56,6 +57,15 @@ void llst_kill(llist *llst) {
         kill_node(old_head);
     }
     free(llst);
+}
+
+void llst_kill_f(llist *llst, void (*kill)(void *ptr)) {
+    node *cur = llst->head->next;
+    for (int i = 0; i < llst->size; i++) {
+        kill(*(void **)cur->data);
+        cur = cur->next;
+    }
+    llst_kill(llst);
 }
 
 llist_iter *llst_it_init(llist *llst, llist_way way) {

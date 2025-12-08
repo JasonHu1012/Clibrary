@@ -15,6 +15,22 @@ void func_test1() {
 }
 
 void func_test2() {
+    int T = 1000;
+
+    printf("llst_kill_f... ");
+
+    // llist of int *
+    llist *llst = llst_init(sizeof(int *));
+    for (int i = 0; i < T; i++) {
+        int *p = (int *)malloc(sizeof(int));
+        llst_append(llst, &p, LLST_TAIL);
+    }
+    llst_kill_f(llst, free);
+
+    printf("pass\n");
+}
+
+void func_test3() {
     printf("llst_it_init, llst_it_kill... ");
 
     llist *llst = llst_init(sizeof(int));
@@ -29,7 +45,7 @@ void func_test2() {
     printf("pass\n");
 }
 
-void func_test3() {
+void func_test4() {
     int T = 1000;
 
     printf("llst_append, llst_remove... ");
@@ -55,7 +71,7 @@ void func_test3() {
     printf("pass\n");
 }
 
-void func_test4() {
+void func_test5() {
     int size = 1000;
 
     printf("llst_size, llst_is_empty... ");
@@ -80,7 +96,7 @@ void func_test4() {
     printf("pass\n");
 }
 
-void func_test5() {
+void func_test6() {
     int size = 1000;
 
     printf("llst_it_move... ");
@@ -106,7 +122,7 @@ void func_test5() {
     printf("pass\n");
 }
 
-void func_test6() {
+void func_test7() {
     int size = 1000;
 
     printf("llst_it_move_to... ");
@@ -133,7 +149,7 @@ void func_test6() {
     printf("pass\n");
 }
 
-void func_test7() {
+void func_test8() {
     int size = 1000;
 
     printf("llst_it_get, llst_it_set... ");
@@ -165,7 +181,7 @@ void func_test7() {
     printf("pass\n");
 }
 
-void func_test8() {
+void func_test9() {
     int T = 1000;
 
     printf("llst_it_insert, llst_it_remove... ");
@@ -196,7 +212,7 @@ void func_test8() {
     printf("pass\n");
 }
 
-void func_test9() {
+void func_test10() {
     int size = 1000;
 
     printf("llst_remove `dst` can be NULL... ");
@@ -216,7 +232,7 @@ void func_test9() {
     printf("pass\n");
 }
 
-void func_test10() {
+void func_test11() {
     int size = 1000;
 
     printf("llst_it_remove `dst` can be NULL... ");
@@ -307,6 +323,7 @@ int main() {
     func_test8();
     func_test9();
     func_test10();
+    func_test11();
 
     time_test1();
     time_test2();

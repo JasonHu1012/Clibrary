@@ -18,7 +18,9 @@ typedef enum {
 llist *llst_init(int width);
 
 // kill `llst`
-void llst_kill(llist *llst);
+void llst_kill(void *llst);
+
+void llst_kill_f(llist *llst, void (*kill)(void *ptr));
 
 // initialize a linked list iterator of `llst`
 // `way` decides the iterator to point at head or tail of `llst`
