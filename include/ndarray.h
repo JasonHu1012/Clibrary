@@ -8,7 +8,11 @@ typedef struct ndarray ndarray;
 ndarray *nda_init(int *sizes, int dim, int width);
 
 // kill `nda`
-void nda_kill(ndarray *nda);
+void nda_kill(void *nda);
+
+// kill `nda`
+// before killing `nda`, will call `kill()` to kill each element
+void nda_kill_f(ndarray *nda, void (*kill)(void *ptr));
 
 // copy `nda[indexes]` to `dst`
 // `indexes` is an array whose length is the dimension of `nda`

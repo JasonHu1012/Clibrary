@@ -16,6 +16,24 @@ void func_test1() {
 }
 
 void func_test2() {
+    int sizes[2] = { 50, 20 };
+
+    printf("nda_kill_f... ");
+
+    // ndarray of int *
+    ndarray *nda = nda_init(sizes, sizeof(sizes) / sizeof(int), sizeof(int *));
+    for (int i = 0; i < sizes[0]; i++) {
+        for (int j = 0; j < sizes[1]; j++) {
+            int *p = (int *)malloc(sizeof(int));
+            nda_set(nda, (int[]){ i, j }, &p);
+        }
+    }
+    nda_kill_f(nda, free);
+
+    printf("pass\n");
+}
+
+void func_test3() {
     printf("nda_get, nda_set... ");
 
     int sizes[3] = { 50, 100, 20 };
@@ -92,6 +110,7 @@ int main() {
 
     func_test1();
     func_test2();
+    func_test3();
 
     time_test1();
 

@@ -41,6 +41,20 @@ static void kill_node(node *n, int dim_i, int dim, int *sizes) {
     free(n);
 }
 
+static void kill_node_f(node *n, int dim_i, int dim, int *sizes, void (*kill)(void *ptr)) {
+    for (int i = 0; i < sizes[dim_i]; i++) {
+        if (dim_i < dim - 1) {
+            kill_node(n->data[i], dim_i + 1, dim, sizes);
+        }
+        else {
+            kill(((void **)n->data)[i]);
+        }
+    }
+
+    free(n->data);
+    free(n);
+}
+
 ndarray *nda_init(int *sizes, int dim, int width) {
     assert(dim > 0 && width > 0);
     for (int i = 0; i < dim; i++) {
@@ -56,8 +70,15 @@ ndarray *nda_init(int *sizes, int dim, int width) {
     return ret;
 }
 
-void nda_kill(ndarray *nda) {
+void nda_kill(void *ptr) {
+    ndarray *nda = (ndarray *)ptr;
     kill_node(nda->data, 0, nda->dim, nda->sizes);
+    free(nda->sizes);
+    free(nda);
+}
+
+void nda_kill_f(ndarray *nda, void (*kill)(void *ptr)) {
+    kill_node_f(nda->data, 0, nda->dim, nda->sizes, kill);
     free(nda->sizes);
     free(nda);
 }
