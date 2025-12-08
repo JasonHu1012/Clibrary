@@ -44,7 +44,7 @@ static void kill_node(node *n, int dim_i, int dim, int *sizes) {
 static void kill_node_f(node *n, int dim_i, int dim, int *sizes, void (*kill)(void *ptr)) {
     for (int i = 0; i < sizes[dim_i]; i++) {
         if (dim_i < dim - 1) {
-            kill_node(n->data[i], dim_i + 1, dim, sizes);
+            kill_node_f(n->data[i], dim_i + 1, dim, sizes, kill);
         }
         else {
             kill(((void **)n->data)[i]);
