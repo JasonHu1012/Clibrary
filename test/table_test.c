@@ -18,6 +18,24 @@ void func_test1() {
 void func_test2() {
     int size = 1000;
 
+    printf("tbl_kill_f... ");
+
+    // table of int *
+    table *tbl = tbl_init(sizeof(int *));
+    for (int i = 0; i < size; i++) {
+        char key[16];
+        sprintf(key, "key%d", i);
+        int *p = (int *)malloc(sizeof(int));
+        tbl_set(tbl, key, &p);
+    }
+    tbl_kill_f(tbl, free);
+
+    printf("pass\n");
+}
+
+void func_test3() {
+    int size = 1000;
+
     printf("tbl_get, tbl_set... ");
 
     table *tbl = tbl_init(sizeof(int));
@@ -54,7 +72,7 @@ void func_test2() {
     printf("pass\n");
 }
 
-void func_test3() {
+void func_test4() {
     int key_len = 1024;
 
     printf("tbl_contain... ");
@@ -91,7 +109,7 @@ void func_test3() {
     printf("pass\n");
 }
 
-void func_test4() {
+void func_test5() {
     printf("tbl_remove... ");
 
     table *tbl = tbl_init(sizeof(int));
@@ -113,7 +131,7 @@ void func_test4() {
     printf("pass\n");
 }
 
-void func_test5() {
+void func_test6() {
     int size = 1000;
 
     printf("tbl_size, tbl_is_empty... ");
@@ -146,7 +164,7 @@ void func_test5() {
     printf("pass\n");
 }
 
-void func_test6() {
+void func_test7() {
     int size = 100;
 
     printf("tbl_keys... ");
@@ -233,6 +251,7 @@ int main() {
     func_test4();
     func_test5();
     func_test6();
+    func_test7();
 
     time_test1();
 

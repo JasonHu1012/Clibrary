@@ -11,7 +11,11 @@ typedef struct table table;
 table *tbl_init(int width);
 
 // kill `tbl`
-void tbl_kill(table *tbl);
+void tbl_kill(void *tbl);
+
+// kill `tbl`
+// before killing `tbl`, will call `kill()` to kill each element
+void tbl_kill_f(table *tbl, void (*kill)(void *ptr));
 
 // copy `tbl[key]` to `dst`
 // `dst` won't be modified if `key` isn't found

@@ -37,6 +37,13 @@ static void kill_kv_pair(kv_pair *pair) {
     free(pair);
 }
 
+static void kill_kv_pair_f(kv_pair *pair, void (*kill)(void *ptr)) {
+    kill(*(void **)pair->value);
+    free(pair->key);
+    free(pair->value);
+    free(pair);
+}
+
 table *tbl_init(int width) {
     assert(width > 0);
 
@@ -55,7 +62,8 @@ table *tbl_init(int width) {
     return ret;
 }
 
-void tbl_kill(table *tbl) {
+void tbl_kill(void *ptr) {
+    table *tbl = (table *)ptr;
     for (int i = 0; i < lst_size(tbl->arr); i++) {
         int belong;
         lst_get(tbl->belong, i, &belong);
@@ -74,6 +82,38 @@ void tbl_kill(table *tbl) {
                 llst_it_get(llst_it, &pair);
 
                 kill_kv_pair(pair);
+            } while (llst_it_move(llst_it, LLST_TAIL));
+
+            llst_it_kill(llst_it);
+        }
+
+        llst_kill(llst);
+    }
+
+    lst_kill(tbl->arr);
+    lst_kill(tbl->belong);
+    free(tbl);
+}
+
+void tbl_kill_f(table *tbl, void (*kill)(void *ptr)) {
+    for (int i = 0; i < lst_size(tbl->arr); i++) {
+        int belong;
+        lst_get(tbl->belong, i, &belong);
+        if (i != belong) {
+            // the llist belongs to others, don't kill it
+            continue;
+        }
+
+        llist *llst;
+        lst_get(tbl->arr, i, &llst);
+
+        if (!llst_is_empty(llst)) {
+            llist_iter *llst_it = llst_it_init(llst, LLST_HEAD);
+            do {
+                kv_pair *pair;
+                llst_it_get(llst_it, &pair);
+
+                kill_kv_pair_f(pair, kill);
             } while (llst_it_move(llst_it, LLST_TAIL));
 
             llst_it_kill(llst_it);
