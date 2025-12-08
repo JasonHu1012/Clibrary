@@ -5,10 +5,10 @@
 
 typedef struct node {
     struct node **data;
-    int size;
 } node;
 
 struct ndarray {
+    int *sizes;
     node *data;
     int width;
     int dim;
@@ -27,14 +27,13 @@ static node *init_node(int *sizes, int dim_i, int dim, int width) {
         ret->data = (node **)malloc(width * sizes[dim_i]);
     }
 
-    ret->size = sizes[dim_i];
     return ret;
 }
 
-static void kill_node(node *n, int dim_i, int dim) {
+static void kill_node(node *n, int dim_i, int dim, int *sizes) {
     if (dim_i < dim - 1) {
-        for (int i = 0; i < n->size; i++) {
-            kill_node(n->data[i], dim_i + 1, dim);
+        for (int i = 0; i < sizes[dim_i]; i++) {
+            kill_node(n->data[i], dim_i + 1, dim, sizes);
         }
     }
 
@@ -49,7 +48,9 @@ ndarray *nda_init(int *sizes, int dim, int width) {
     }
 
     ndarray *ret = (ndarray *)malloc(sizeof(ndarray));
-    ret->data = init_node(sizes, 0, dim, width);
+    ret->sizes = (int *)malloc(sizeof(int) * dim);
+    memcpy(ret->sizes, sizes, sizeof(int) * dim);
+    ret->data = init_node(ret->sizes, 0, dim, width);
     ret->width = width;
     ret->dim = dim;
     return ret;
@@ -61,15 +62,14 @@ void nda_kill(ndarray *nda) {
 }
 
 void nda_get(ndarray *nda, int *indexes, void *dst) {
-    // because size is stored in node, can't check argument validity first
-    node *cur = nda->data;
-    for (int d = 0; d < nda->dim - 1; d++) {
-        assert(indexes[d] >= 0 && indexes[d] < cur->size);
-
-        cur = cur->data[indexes[d]];
+    for (int d = 0; d < nda->dim; d++) {
+        assert(indexes[d] >= 0 && indexes[d] < nda->sizes[d]);
     }
 
-    assert(indexes[nda->dim - 1] >= 0 && indexes[nda->dim - 1] < cur->size);
+    node *cur = nda->data;
+    for (int d = 0; d < nda->dim - 1; d++) {
+        cur = cur->data[indexes[d]];
+    }
 
     memcpy(
         dst,
@@ -78,15 +78,14 @@ void nda_get(ndarray *nda, int *indexes, void *dst) {
 }
 
 void nda_set(ndarray *nda, int *indexes, void *src) {
-    // because size is stored in node, can't check argument validity first
-    node *cur = nda->data;
-    for (int d = 0; d < nda->dim - 1; d++) {
-        assert(indexes[d] >= 0 && indexes[d] < cur->size);
-
-        cur = cur->data[indexes[d]];
+    for (int d = 0; d < nda->dim; d++) {
+        assert(indexes[d] >= 0 && indexes[d] < nda->sizes[d]);
     }
 
-    assert(indexes[nda->dim - 1] >= 0 && indexes[nda->dim - 1] < cur->size);
+    node *cur = nda->data;
+    for (int d = 0; d < nda->dim - 1; d++) {
+        cur = cur->data[indexes[d]];
+    }
 
     memcpy(
         (char *)cur->data + nda->width * indexes[nda->dim - 1],

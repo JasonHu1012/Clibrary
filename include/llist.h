@@ -20,6 +20,8 @@ llist *llst_init(int width);
 // kill `llst`
 void llst_kill(void *llst);
 
+// kill `llst`
+// before killing `llst`, will call `kill()` to kill each element
 void llst_kill_f(llist *llst, void (*kill)(void *ptr));
 
 // initialize a linked list iterator of `llst`
