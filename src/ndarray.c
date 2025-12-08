@@ -57,7 +57,8 @@ ndarray *nda_init(int *sizes, int dim, int width) {
 }
 
 void nda_kill(ndarray *nda) {
-    kill_node(nda->data, 0, nda->dim);
+    kill_node(nda->data, 0, nda->dim, nda->sizes);
+    free(nda->sizes);
     free(nda);
 }
 
