@@ -15,6 +15,7 @@ typedef enum {
 typedef struct json_data json_data;
 
 // return parsed result of `json_str`
+// `json_str` must be valid
 json_data *json_parse(char *json_str);
 
 // initialize an empty json object
