@@ -84,7 +84,7 @@ void func_test3() {
         " \t\"abc\\/\\\\\\\"abc\\ntn\"",
         "\r{  \"key\\n1\":{\"key1\":[\t\ttrue],\"key2\":\t123},\n\n\"key2\":[]}    "
     };
-    // check INDENT in src/json.c
+    // indent = 2
     char **output = (char *[]){
         "123",
         "true",
@@ -107,7 +107,7 @@ void func_test3() {
     // count test cases above
     for (int i = 0; i < 5; i++) {
         json_data *json = json_parse(input[i]);
-        char *json_str = json_to_str(json, false);
+        char *json_str = json_to_str(json, 2, false);
 
         assert(!strcmp(json_str, output[i]));
 
@@ -135,6 +135,7 @@ void func_test4() {
     123\n\
   ]\n\
 }";
+    // indent = 2
     char *output = "{\n\
   \"key1\": [\n\
     123,\n\
@@ -155,11 +156,100 @@ void func_test4() {
     printf("json_to_str with sort... ");
 
     json_data *json = json_parse(input);
-    char *json_str = json_to_str(json, true);
+    char *json_str = json_to_str(json, 2, true);
 
     assert(!strcmp(json_str, output));
 
     free(json_str);
+    json_kill(json);
+
+    printf("pass\n");
+}
+
+void func_test18() {
+    char *input = "{\n\
+  \"key2\": {\n\
+    \"key3\": 123,\n\
+    \"key2\": true,\n\
+    \"key1\": [\n\
+      \"abc\",\n\
+      null,\n\
+      \"abc\"\n\
+    ]\n\
+  },\n\
+  \"key3\": \"abc\",\n\
+  \"key1\": [\n\
+    123,\n\
+    123\n\
+  ]\n\
+}";
+    char **output = (char *[]){
+        "{\
+\"key2\":{\
+\"key3\":123,\
+\"key2\":true,\
+\"key1\":[\
+\"abc\",\
+null,\
+\"abc\"\
+]\
+},\
+\"key3\":\"abc\",\
+\"key1\":[\
+123,\
+123\
+]\
+}",
+        "{\n\
+\"key2\": {\n\
+\"key3\": 123,\n\
+\"key2\": true,\n\
+\"key1\": [\n\
+\"abc\",\n\
+null,\n\
+\"abc\"\n\
+]\n\
+},\n\
+\"key3\": \"abc\",\n\
+\"key1\": [\n\
+123,\n\
+123\n\
+]\n\
+}",
+        "{\n\
+ \"key2\": {\n\
+  \"key3\": 123,\n\
+  \"key2\": true,\n\
+  \"key1\": [\n\
+   \"abc\",\n\
+   null,\n\
+   \"abc\"\n\
+  ]\n\
+ },\n\
+ \"key3\": \"abc\",\n\
+ \"key1\": [\n\
+  123,\n\
+  123\n\
+ ]\n\
+}"
+    };
+
+    printf("json_to_str with different indent... ");
+
+    json_data *json = json_parse(input);
+
+    char *json_str = json_to_str(json, -1, false);
+    assert(!strcmp(json_str, output[0]));
+    free(json_str);
+
+    json_str = json_to_str(json, 0, false);
+    assert(!strcmp(json_str, output[1]));
+    free(json_str);
+
+    json_str = json_to_str(json, 1, false);
+    assert(!strcmp(json_str, output[2]));
+    free(json_str);
+
     json_kill(json);
 
     printf("pass\n");
@@ -579,6 +669,7 @@ int main() {
     func_test2(); 
     func_test3(); 
     func_test4(); 
+    func_test18();
     func_test5(); 
     func_test6(); 
     func_test7(); 
