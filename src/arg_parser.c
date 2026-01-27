@@ -54,7 +54,8 @@ arg_parser *arg_init() {
     return ret;
 }
 
-void arg_kill(arg_parser *arg) {
+void arg_kill(void *ptr) {
+    arg_parser *arg = (arg_parser *)ptr;
     table *tbl = arg->arguments;
 
     char **keys = tbl_keys(tbl);
