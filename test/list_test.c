@@ -10,6 +10,7 @@ void func_test1() {
     list *lst = lst_init(sizeof(int));
     assert(lst_size(lst) == 0);
     lst_kill(lst);
+    lst_kill(NULL);
 
     printf("pass\n");
 }
@@ -51,6 +52,7 @@ void func_test2() {
         lst_append(lst, &inner);
     }
     lst_kill_f(lst, my_kill);
+    lst_kill_f(NULL, my_kill);
 
     printf("pass\n");
 }

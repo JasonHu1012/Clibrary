@@ -71,6 +71,10 @@ ndarray *nda_init(int *sizes, int dim, int width) {
 }
 
 void nda_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     ndarray *nda = (ndarray *)ptr;
     kill_node(nda->data, 0, nda->dim, nda->sizes);
     free(nda->sizes);
@@ -78,6 +82,10 @@ void nda_kill(void *ptr) {
 }
 
 void nda_kill_f(ndarray *nda, void (*kill)(void *ptr)) {
+    if (!nda) {
+        return;
+    }
+
     kill_node_f(nda->data, 0, nda->dim, nda->sizes, kill);
     free(nda->sizes);
     free(nda);

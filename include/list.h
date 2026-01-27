@@ -10,10 +10,12 @@ typedef struct list list;
 list *lst_init(int width);
 
 // kill `lst`
+// do nothing when `lst` is NULL
 void lst_kill(void *lst);
 
 // kill `lst` with callback function
 // before killing `lst`, will call `kill()` to kill each element
+// do nothing when `lst` is NULL
 void lst_kill_f(list *lst, void (*kill)(void *ptr));
 
 // set the size of `lst` to `size`

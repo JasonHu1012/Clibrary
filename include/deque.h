@@ -9,10 +9,12 @@ typedef struct deque deque;
 deque *deq_init(int width);
 
 // kill `deq`
+// do nothing when `deq` is NULL
 void deq_kill(void *deq);
 
 // kill `deq` with callback function
 // before killing `deq`, will call `kill()` to kill each element
+// do nothing when `deq` is NULL
 void deq_kill_f(deque *deq, void (*kill)(void *ptr));
 
 // return size of `deq`

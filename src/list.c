@@ -25,12 +25,20 @@ list *lst_init(int width) {
 }
 
 void lst_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     list *lst = (list *)ptr;
     free(lst->data);
     free(lst);
 }
 
 void lst_kill_f(list *lst, void (*kill)(void *ptr)) {
+    if (!lst) {
+        return;
+    }
+
     for (int i = 0; i < lst->size; i++) {
         kill(((void **)lst->data)[i]);
     }

@@ -72,6 +72,7 @@ void func_test2() {
         json_data *json = json_parse(input[i]);
         json_kill(json);
     }
+    json_kill(NULL);
 
     printf("pass\n");
 }

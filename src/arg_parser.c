@@ -55,6 +55,10 @@ arg_parser *arg_init() {
 }
 
 void arg_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     arg_parser *arg = (arg_parser *)ptr;
     table *tbl = arg->arguments;
 

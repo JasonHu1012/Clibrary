@@ -10,6 +10,7 @@ void func_test1() {
     llist *llst = llst_init(sizeof(int));
     assert(llst_size(llst) == 0);
     llst_kill(llst);
+    llst_kill(NULL);
 
     printf("pass\n");
 }
@@ -26,6 +27,7 @@ void func_test2() {
         llst_append(llst, &p, LLST_TAIL);
     }
     llst_kill_f(llst, free);
+    llst_kill_f(NULL, free);
 
     printf("pass\n");
 }
@@ -39,6 +41,7 @@ void func_test3() {
 
     llist_iter *llst_it = llst_it_init(llst, LLST_HEAD);
     llst_it_kill(llst_it);
+    llst_it_kill(NULL);
 
     llst_kill(llst);
 

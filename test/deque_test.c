@@ -10,6 +10,7 @@ void func_test1() {
     deque *deq = deq_init(sizeof(int));
     assert(deq_size(deq) == 0);
     deq_kill(deq);
+    deq_kill(NULL);
 
     printf("pass\n");
 }
@@ -28,6 +29,7 @@ void func_test2() {
         deq_push_tail(deq, &p);
     }
     deq_kill_f(deq, free);
+    deq_kill_f(NULL, free);
 
     printf("pass\n");
 }

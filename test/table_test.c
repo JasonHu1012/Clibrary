@@ -11,6 +11,7 @@ void func_test1() {
     table *tbl = tbl_init(sizeof(int));
     assert(tbl_size(tbl) == 0);
     tbl_kill(tbl);
+    tbl_kill(NULL);
 
     printf("pass\n");
 }
@@ -29,6 +30,7 @@ void func_test2() {
         tbl_set(tbl, key, &p);
     }
     tbl_kill_f(tbl, free);
+    tbl_kill_f(NULL, free);
 
     printf("pass\n");
 }

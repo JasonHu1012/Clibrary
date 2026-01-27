@@ -19,6 +19,7 @@ void func_test1() {
         assert(*vec_entry(vec, i) == 0.);
     }
     vec_kill(vec);
+    vec_kill(NULL);
 
     printf("pass\n");
 }

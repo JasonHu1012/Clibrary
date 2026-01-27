@@ -15,6 +15,7 @@ typedef enum {
 arg_parser *arg_init();
 
 // kill `arg`
+// do nothing when `arg` is NULL
 void arg_kill(void *arg);
 
 // with "-h" or "--help", options list and `help` will be printed to stderr

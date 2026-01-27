@@ -98,6 +98,10 @@ json_data *json_null_init() {
 }
 
 void json_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     json_data *json = (json_data *)ptr;
     switch (json->type) {
         case JSON_OBJECT:

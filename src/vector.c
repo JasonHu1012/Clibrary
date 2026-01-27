@@ -29,6 +29,10 @@ vector *vec_arr(int dim, double *arr) {
 }
 
 void vec_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     vector *vec = (vector *)ptr;
     free(vec->entry);
     free(vec);

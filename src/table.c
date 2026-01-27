@@ -63,6 +63,10 @@ table *tbl_init(int width) {
 }
 
 void tbl_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     table *tbl = (table *)ptr;
     for (int i = 0; i < lst_size(tbl->arr); i++) {
         int belong;
@@ -96,6 +100,10 @@ void tbl_kill(void *ptr) {
 }
 
 void tbl_kill_f(table *tbl, void (*kill)(void *ptr)) {
+    if (!tbl) {
+        return;
+    }
+
     for (int i = 0; i < lst_size(tbl->arr); i++) {
         int belong;
         lst_get(tbl->belong, i, &belong);

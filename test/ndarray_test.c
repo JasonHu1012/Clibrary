@@ -11,6 +11,7 @@ void func_test1() {
 
     ndarray *nda = nda_init(sizes, sizeof(sizes) / sizeof(int), sizeof(int));
     nda_kill(nda);
+    nda_kill(NULL);
 
     printf("pass\n");
 }
@@ -29,6 +30,7 @@ void func_test2() {
         }
     }
     nda_kill_f(nda, free);
+    nda_kill_f(NULL, free);
 
     printf("pass\n");
 }

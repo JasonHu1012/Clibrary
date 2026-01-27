@@ -49,6 +49,10 @@ llist *llst_init(int width) {
 }
 
 void llst_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     llist *llst = (llist *)ptr;
     while (llst->head) {
         node *old_head = llst->head;
@@ -60,6 +64,10 @@ void llst_kill(void *ptr) {
 }
 
 void llst_kill_f(llist *llst, void (*kill)(void *ptr)) {
+    if (!llst) {
+        return;
+    }
+
     node *cur = llst->head->next;
     for (int i = 0; i < llst->size; i++) {
         kill(*(void **)cur->data);
@@ -78,6 +86,10 @@ llist_iter *llst_it_init(llist *llst, llist_way way) {
 }
 
 void llst_it_kill(llist_iter *llst_it) {
+    if (!llst_it) {
+        return;
+    }
+
     free(llst_it);
 }
 

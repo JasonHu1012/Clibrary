@@ -10,6 +10,7 @@ void func_test1() {
     stack *stk = stk_init(sizeof(int));
     assert(stk_size(stk) == 0);
     stk_kill(stk);
+    stk_kill(NULL);
 
     printf("pass\n");
 }
@@ -26,6 +27,7 @@ void func_test2() {
         stk_push(stk, &p);
     }
     stk_kill_f(stk, free);
+    stk_kill_f(NULL, free);
 
     printf("pass\n");
 }

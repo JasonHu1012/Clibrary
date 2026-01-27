@@ -8,10 +8,12 @@ typedef struct ndarray ndarray;
 ndarray *nda_init(int *sizes, int dim, int width);
 
 // kill `nda`
+// do nothing when `nda` is NULL
 void nda_kill(void *nda);
 
 // kill `nda`
 // before killing `nda`, will call `kill()` to kill each element
+// do nothing when `nda` is NULL
 void nda_kill_f(ndarray *nda, void (*kill)(void *ptr));
 
 // copy `nda[indexes]` to `dst`

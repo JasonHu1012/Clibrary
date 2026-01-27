@@ -21,6 +21,7 @@ void func_test1() {
 
     arg_parser *arg = arg_init();
     arg_kill(arg);
+    arg_kill(NULL);
 
     printf("pass\n");
 }

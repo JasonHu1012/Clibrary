@@ -49,6 +49,10 @@ deque *deq_init(int width) {
 }
 
 void deq_kill(void *ptr) {
+    if (!ptr) {
+        return;
+    }
+
     deque *deq = ptr;
     while (deq->head) {
         node *old_head = deq->head;
@@ -60,6 +64,10 @@ void deq_kill(void *ptr) {
 }
 
 void deq_kill_f(deque *deq, void (*kill)(void *ptr)) {
+    if (!deq) {
+        return;
+    }
+
     if (deq->head != deq->tail) {
         node *cur = deq->head->next;
         while (cur != deq->tail) {

@@ -18,10 +18,12 @@ typedef enum {
 llist *llst_init(int width);
 
 // kill `llst`
+// do nothing when `llst` is NULL
 void llst_kill(void *llst);
 
 // kill `llst`
 // before killing `llst`, will call `kill()` to kill each element
+// do nothing when `llst` is NULL
 void llst_kill_f(llist *llst, void (*kill)(void *ptr));
 
 // initialize a linked list iterator of `llst`
@@ -31,6 +33,7 @@ void llst_kill_f(llist *llst, void (*kill)(void *ptr));
 llist_iter *llst_it_init(llist *llst, llist_way way);
 
 // kill `llst_it`
+// do nothing when `llst_it` is NULL
 void llst_it_kill(llist_iter *llst_it);
 
 // append (copy) `src` to `llst`

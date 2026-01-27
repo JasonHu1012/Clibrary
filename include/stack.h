@@ -9,10 +9,12 @@ typedef struct stack stack;
 stack *stk_init(int width);
 
 // kill `stk`
+// do nothing when `stk` is NULL
 void stk_kill(void *stk);
 
 // kill `stk`
 // before killing `stk`, will call `kill()` to kill each element
+// do nothing when `stk` is NULL
 void stk_kill_f(stack *stk, void (*kill)(void *ptr));
 
 // return size of `stk`
