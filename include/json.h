@@ -39,7 +39,7 @@ json_data *json_null_init();
 
 // kill `json`
 // user should only kill the outermost json structure
-void json_kill(json_data *json);
+void json_kill(void *json);
 
 // return whether `json_str` is in valid format
 bool json_is_valid(char *json_str);
