@@ -14,7 +14,7 @@ vector *vec_zero(int dim);
 vector *vec_arr(int dim, double *arr);
 
 // kill `vec`
-void vec_kill(vector *vec);
+void vec_kill(void *vec);
 
 // return the pointer of the `index`-th entry of `vec` to get and set it
 double *vec_entry(vector *vec, int index);

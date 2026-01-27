@@ -28,7 +28,8 @@ vector *vec_arr(int dim, double *arr) {
     return ret;
 }
 
-void vec_kill(vector *vec) {
+void vec_kill(void *ptr) {
+    vector *vec = (vector *)ptr;
     free(vec->entry);
     free(vec);
 }
